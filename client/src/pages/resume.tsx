@@ -29,26 +29,26 @@ export function Resume() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-8 pb-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-background pt-6 sm:pt-8 pb-6 sm:pb-8">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Header with back button and download button */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center justify-between mb-6"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6"
         >
           <Button
             variant="ghost"
             onClick={handleBackToHome}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <ArrowLeft className="h-4 w-4" />
             {t("resume.backToHome")}
           </Button>
           <Button
             onClick={handleDownload}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <Download className="h-4 w-4" />
             {t("resume.download")}
@@ -65,7 +65,7 @@ export function Resume() {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <iframe
               src={resumePath}
-              className="w-full h-[calc(100vh-200px)] min-h-[800px] border-0"
+              className="w-full h-[calc(100vh-180px)] sm:h-[calc(100vh-200px)] min-h-[600px] sm:min-h-[800px] border-0"
               title="Resume"
             />
           </div>
@@ -76,12 +76,12 @@ export function Resume() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-6 flex justify-center md:hidden"
+          className="mt-4 sm:mt-6 flex justify-center sm:hidden"
         >
           <Button
             onClick={handleDownload}
             size="lg"
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full"
           >
             <Download className="h-4 w-4" />
             {t("resume.download")}

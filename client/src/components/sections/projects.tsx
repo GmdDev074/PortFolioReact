@@ -11,22 +11,22 @@ export function Projects() {
   const { t } = useLanguage()
 
   return (
-    <section id="projects" className="py-16 md:py-24 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="projects" className="py-12 sm:py-16 md:py-24 bg-background">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("projects.title")}</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">{t("projects.title")}</h2>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
             {t("projects.subtitle")}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {Constants.PROJECTS.map((project, index) => (
             <motion.div
               key={project.id}
@@ -40,13 +40,13 @@ export function Projects() {
                   <Play className="h-12 w-12 text-primary/40" />
                 </div>
                 <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <CardTitle className="text-xl">{project.title}</CardTitle>
-                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <CardTitle className="text-lg sm:text-xl flex-1">{project.title}</CardTitle>
+                    <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary whitespace-nowrap flex-shrink-0">
                       {project.category}
                     </span>
                   </div>
-                  <CardDescription className="text-base">
+                  <CardDescription className="text-sm sm:text-base">
                     {project.description}
                   </CardDescription>
                 </CardHeader>

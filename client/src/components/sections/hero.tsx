@@ -22,18 +22,18 @@ export function Hero() {
 
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 pt-20">
-      <div className="container mx-auto px-4 py-16 md:py-24">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 pt-16 sm:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="relative inline-flex items-center mb-6"
+            className="relative inline-flex items-center mb-4 sm:mb-6"
           >
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary border border-primary/20">
+            <span className="relative inline-flex rounded-full bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-primary border border-primary/20">
               {t("hero.badge")}
             </span>
           </motion.div>
@@ -43,10 +43,10 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 px-2"
           >
             {t("hero.title")}{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 block sm:inline">
               {t("hero.titleHighlight")}
             </span>
           </motion.h1>
@@ -56,7 +56,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
+            className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto px-4 sm:px-0"
           >
             {t("hero.description")}
           </motion.p>
@@ -66,19 +66,19 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0"
           >
-            <Button size="lg" onClick={scrollToProjects}>
+            <Button size="lg" onClick={scrollToProjects} className="w-full sm:w-auto">
               {t("hero.primaryButton")}
             </Button>
-            <Button size="lg" variant="outline" onClick={scrollToContact}>
+            <Button size="lg" variant="outline" onClick={scrollToContact} className="w-full sm:w-auto">
               {t("hero.secondaryButton")}
             </Button>
             <Button
               size="lg"
               variant="outline"
               onClick={handleViewResume}
-              className="hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              className="w-full sm:w-auto hover:bg-primary hover:text-primary-foreground transition-all duration-300"
             >
               <FileText className="h-4 w-4 mr-2" />
               {t("hero.viewResume")}
@@ -90,15 +90,15 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-wrap justify-center gap-6"
+            className="flex flex-wrap justify-center gap-4 sm:gap-6 px-4 sm:px-0"
           >
             {[t("hero.feature1"), t("hero.feature2")].map((feature, index) => (
               <div
                 key={index}
-                className="flex items-center gap-2 text-sm text-muted-foreground"
+                className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground"
               >
-                <CheckCircle2 className="h-5 w-5 text-primary" />
-                <span>{feature}</span>
+                <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
+                <span className="whitespace-nowrap">{feature}</span>
               </div>
             ))}
           </motion.div>

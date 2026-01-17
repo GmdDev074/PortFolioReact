@@ -67,9 +67,9 @@ export function About() {
   }, [])
 
   return (
-    <section id="about" className="py-16 md:py-24 bg-gradient-to-br from-background to-primary/5">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+    <section id="about" className="py-12 sm:py-16 md:py-24 bg-gradient-to-br from-background to-primary/5">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left: Statistics Card */}
           <motion.div
             ref={statsRef}
@@ -77,9 +77,10 @@ export function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.5 }}
+            className="order-2 lg:order-1"
           >
-            <Card className="p-8 bg-gradient-to-br from-primary/10 to-primary/5">
-              <div className="grid grid-cols-2 gap-6">
+            <Card className="p-6 sm:p-8 bg-gradient-to-br from-primary/10 to-primary/5">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6">
                 {animatedStats.map((stat, index) => (
                   <motion.div
                     key={index}
@@ -91,10 +92,10 @@ export function About() {
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     className="text-center"
                   >
-                    <div className="text-4xl font-bold text-primary mb-2">
+                    <div className="text-3xl sm:text-4xl font-bold text-primary mb-1 sm:mb-2">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
@@ -107,14 +108,15 @@ export function About() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.5 }}
+            className="order-1 lg:order-2"
           >
-            <p className="text-primary font-medium mb-2">{t("about.subtitle")}</p>
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("about.title")}</h2>
-            <p className="text-muted-foreground mb-8">
+            <p className="text-primary font-medium mb-2 text-sm sm:text-base">{t("about.subtitle")}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">{t("about.title")}</h2>
+            <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
               {t("about.description")}
             </p>
 
-            <div className="space-y-4 mb-8">
+            <div className="space-y-3 sm:space-y-4">
               {Constants.WHY_CHOOSE_ME.map((feature, index) => (
                 <motion.div
                   key={index}
@@ -122,12 +124,12 @@ export function About() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: false }}
                   transition={{ delay: index * 0.1, duration: 0.5 }}
-                  className="flex items-center gap-3"
+                  className="flex items-center gap-2 sm:gap-3"
                 >
-                  <div className="p-1 rounded-full bg-primary/10">
-                    <Check className="h-5 w-5 text-primary" />
+                  <div className="p-1 rounded-full bg-primary/10 flex-shrink-0">
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                   </div>
-                  <span className="text-foreground">{feature}</span>
+                  <span className="text-sm sm:text-base text-foreground">{feature}</span>
                 </motion.div>
               ))}
             </div>

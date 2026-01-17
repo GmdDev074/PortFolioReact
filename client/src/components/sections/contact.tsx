@@ -78,27 +78,27 @@ export function Contact() {
   ]
 
   return (
-    <section id="contact" className="py-16 md:py-24 bg-background">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-12 sm:py-16 md:py-24 bg-background">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <p className="text-primary font-medium mb-2">{t("contact.subtitle")}</p>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+          <p className="text-primary font-medium mb-2 text-sm sm:text-base">{t("contact.subtitle")}</p>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 px-4 sm:px-0">
             {t("contact.title")}
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
             {t("contact.description")}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {/* Contact Info */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-3 sm:space-y-4 order-2 lg:order-1">
             {contactInfo.map((info, index) => {
               const Icon = info.icon
               return (
@@ -113,15 +113,15 @@ export function Contact() {
                 >
                   <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                     <CardHeader>
-                      <div className="flex items-center gap-4">
-                        <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                          <Icon className="h-5 w-5" />
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className="p-2 rounded-lg bg-primary/10 text-primary flex-shrink-0">
+                          <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                         </div>
-                        <CardTitle className="text-lg">{info.title}</CardTitle>
+                        <CardTitle className="text-base sm:text-lg">{info.title}</CardTitle>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-muted-foreground">{info.value}</p>
+                      <p className="text-sm sm:text-base text-muted-foreground break-words">{info.value}</p>
                     </CardContent>
                   </Card>
                 </motion.a>
@@ -135,7 +135,7 @@ export function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-2"
+            className="lg:col-span-2 order-1 lg:order-2"
           >
             <Card>
               <CardHeader>
@@ -154,7 +154,7 @@ export function Contact() {
                       required
                       value={formData.name}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                       placeholder={t("contact.placeholder.name")}
                     />
                   </div>
@@ -169,7 +169,7 @@ export function Contact() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                       placeholder={t("contact.placeholder.email")}
                     />
                   </div>
@@ -184,11 +184,11 @@ export function Contact() {
                       rows={5}
                       value={formData.message}
                       onChange={handleChange}
-                      className="w-full px-4 py-2 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                      className="w-full px-3 sm:px-4 py-2 text-sm sm:text-base rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                       placeholder={t("contact.placeholder.message")}
                     />
                   </div>
-                  <Button type="submit" size="lg" disabled={isSubmitting}>
+                  <Button type="submit" size="lg" disabled={isSubmitting} className="w-full sm:w-auto">
                     {isSubmitting ? t("contact.button.sending") : t("contact.button.submit")}
                   </Button>
                 </form>

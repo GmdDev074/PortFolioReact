@@ -59,12 +59,12 @@ export function Navbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-md"
+        isScrolled || isMobileMenuOpen
+          ? "bg-background/95 backdrop-blur-md shadow-md"
           : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           <motion.a
             href="#"
@@ -72,14 +72,14 @@ export function Navbar() {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: "smooth" })
             }}
-            className="text-2xl font-bold text-primary"
+            className="text-xl sm:text-2xl font-bold text-primary"
             whileHover={{ scale: 1.05 }}
           >
             {Constants.PERSONAL.name}
           </motion.a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-4">
             {Constants.NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -88,7 +88,7 @@ export function Navbar() {
                   e.preventDefault()
                   scrollToSection(link.href)
                 }}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-xs xl:text-sm font-medium transition-colors hover:text-primary whitespace-nowrap ${
                   activeSection === link.href
                     ? "text-primary"
                     : "text-foreground"
@@ -135,9 +135,56 @@ export function Navbar() {
             >
               {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </Button>
-            <Button onClick={() => scrollToSection("#contact")}>
-              {Constants.HERO.secondaryButton}
+            <Button onClick={() => scrollToSection("#contact")} size="sm" className="text-xs xl:text-sm px-3 xl:px-4">
+              {t("hero.secondaryButton")}
             </Button>
+          </div>
+
+          {/* Tablet Menu (md to lg) */}
+          <div className="hidden md:flex lg:hidden items-center gap-2">
+            <div className="relative language-menu-container">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowLangMenu(!showLangMenu)}
+                className="hover:bg-accent h-8 w-8"
+              >
+                <Globe className="h-4 w-4" />
+              </Button>
+              {showLangMenu && (
+                <div className="absolute right-0 top-full mt-2 bg-background border rounded-lg shadow-lg p-1 min-w-[180px] max-h-[400px] overflow-y-auto z-50">
+                  {languages.map((lang) => (
+                    <button
+                      key={lang.code}
+                      onClick={() => {
+                        setLanguage(lang.code)
+                        setShowLangMenu(false)
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded hover:bg-accent transition-colors flex items-center gap-2 text-sm ${
+                        language === lang.code ? "text-primary font-medium bg-accent/50" : ""
+                      }`}
+                    >
+                      <span className="text-lg">{lang.flag}</span>
+                      <span className="flex-1">{lang.nativeName}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="hover:bg-accent h-8 w-8"
+            >
+              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </Button>
+            <button
+              className="text-foreground"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -156,9 +203,9 @@ export function Navbar() {
             height: isMobileMenuOpen ? "auto" : 0,
             opacity: isMobileMenuOpen ? 1 : 0,
           }}
-          className="md:hidden overflow-hidden"
+          className="lg:hidden overflow-hidden bg-background/95 backdrop-blur-md"
         >
-          <div className="flex flex-col gap-4 py-4">
+          <div className="flex flex-col gap-4 py-6 border-t border-border/40">
             {Constants.NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -167,29 +214,30 @@ export function Navbar() {
                   e.preventDefault()
                   scrollToSection(link.href)
                 }}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-base font-medium transition-colors hover:text-primary py-2 px-2 ${
                   activeSection === link.href
-                    ? "text-primary"
+                    ? "text-primary font-semibold"
                     : "text-foreground"
                 }`}
               >
                 {t(`nav.${link.name.toLowerCase()}`) || link.name}
               </a>
             ))}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3 pt-2 border-t border-border/40">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="hover:bg-accent"
+                className="hover:bg-accent h-9 w-9 p-0"
+                aria-label="Toggle theme"
               >
-                {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
-              <div className="relative">
+              <div className="relative flex-1">
                 <select
                   value={language}
                   onChange={(e) => setLanguage(e.target.value as Language)}
-                  className="px-3 py-2 rounded-lg border border-input bg-background text-sm appearance-none pr-8"
+                  className="w-full px-3 py-2 text-sm rounded-lg border border-input bg-background text-foreground appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-ring"
                 >
                   {languages.map((lang) => (
                     <option key={lang.code} value={lang.code}>
@@ -199,8 +247,12 @@ export function Navbar() {
                 </select>
               </div>
             </div>
-            <Button onClick={() => scrollToSection("#contact")}>
-              {Constants.HERO.secondaryButton}
+            <Button 
+              onClick={() => scrollToSection("#contact")} 
+              className="w-full mt-2"
+              size="lg"
+            >
+              {t("hero.secondaryButton")}
             </Button>
           </div>
         </motion.div>
