@@ -10,7 +10,7 @@ interface CarouselProps {
 export function Carousel({
   children,
   autoScroll = true,
-  speed = 50,
+  speed: _speed = 50,
   pauseOnHover = true,
 }: CarouselProps) {
   const containerRef = useRef<HTMLDivElement>(null)

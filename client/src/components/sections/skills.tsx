@@ -11,6 +11,15 @@ import {
   Server,
   Cpu,
   Layers,
+  PenTool,
+  Hash,
+  Triangle,
+  Send,
+  Github,
+  GitBranch,
+  Box,
+  Play,
+  Package,
 } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -28,6 +37,15 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Server,
   Cpu,
   Layers,
+  PenTool,
+  Hash,
+  Triangle,
+  Send,
+  Github,
+  GitBranch,
+  Box,
+  Play,
+  Package,
 }
 
 export function Skills() {
@@ -48,7 +66,7 @@ export function Skills() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
           {Constants.SKILLS.map((skill, index) => {
             const Icon = iconMap[skill.icon] || Code
             return (
@@ -78,6 +96,92 @@ export function Skills() {
             )
           })}
         </div>
+
+        {/* Tools I Use Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.5 }}
+          className="mb-12 sm:mb-16"
+        >
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center text-black dark:text-white">
+            {t("skills.toolsIUse")}
+          </h3>
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-3 sm:gap-4">
+            {Constants.TOOLS_I_USE.map((tool, index) => {
+              const Icon = iconMap[tool.icon] || Code
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: false }}
+                  transition={{ delay: index * 0.05, duration: 0.3 }}
+                  whileHover={{ scale: 1.1 }}
+                  className="flex flex-col items-center gap-2"
+                >
+                  <Card className="w-full aspect-square p-3 sm:p-4 border-2 border-primary/20 hover:border-primary/60 hover:shadow-lg transition-all duration-300 cursor-pointer bg-card">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                    </div>
+                  </Card>
+                  <span className="text-xs sm:text-sm text-muted-foreground text-center">{tool.name}</span>
+                </motion.div>
+              )
+            })}
+          </div>
+        </motion.div>
+
+        {/* Days I Code Section - GitHub Contributions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.5 }}
+        >
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center text-black dark:text-white">
+            {t("skills.daysICode")}
+          </h3>
+          
+          {/* GitHub Contribution Calendar */}
+          <Card className="p-4 sm:p-6 bg-card border-2 border-primary/20">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto pb-2">
+                <a
+                  href={Constants.PERSONAL.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <img
+                    src={`https://ghchart.rshah.org/GmdDev074`}
+                    alt="GitHub Contribution Calendar"
+                    className="w-full h-auto"
+                  />
+                </a>
+              </div>
+              <div className="mt-4 pt-4 border-t border-border">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-sm sm:text-base text-muted-foreground text-center sm:text-left">
+                    <span className="font-semibold text-foreground">534</span> contributions in the last year
+                  </p>
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                    <span>Less</span>
+                    <div className="flex gap-1">
+                      <div className="w-3 h-3 rounded-sm bg-muted"></div>
+                      <div className="w-3 h-3 rounded-sm bg-primary/20"></div>
+                      <div className="w-3 h-3 rounded-sm bg-primary/40"></div>
+                      <div className="w-3 h-3 rounded-sm bg-primary/60"></div>
+                      <div className="w-3 h-3 rounded-sm bg-primary"></div>
+                    </div>
+                    <span>More</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       </div>
     </section>
   )

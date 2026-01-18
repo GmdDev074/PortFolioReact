@@ -83,17 +83,17 @@ export function Reviews() {
   ))
 
   return (
-    <section id="reviews" className="py-16 md:py-24 bg-gradient-to-br from-primary/5 to-background">
-      <div className="container mx-auto px-4">
+    <section id="reviews" className="py-12 sm:py-16 md:py-24 bg-gradient-to-br from-primary/5 to-background">
+      <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("reviews.title")}</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">{t("reviews.title")}</h2>
+          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
             {t("reviews.subtitle")}
           </p>
         </motion.div>

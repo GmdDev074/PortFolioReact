@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 import { useRoute } from "wouter"
 import { motion } from "framer-motion"
-import { ArrowLeft, Github, Play, ExternalLink } from "lucide-react"
+import { ArrowLeft, Github, Play } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useLocation } from "wouter"
 import { useLanguage } from "@/contexts/language-context"
 
@@ -81,9 +81,19 @@ export function ProjectDetail() {
           transition={{ duration: 0.5 }}
           className="max-w-4xl mx-auto"
         >
-          <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg mb-6 sm:mb-8 flex items-center justify-center">
-            <Play className="h-12 w-12 sm:h-20 sm:w-20 text-primary/40" />
-          </div>
+          {project.image ? (
+            <div className="aspect-video overflow-hidden rounded-lg mb-6 sm:mb-8 bg-gradient-to-br from-primary/20 to-primary/5">
+              <img
+                src={project.image}
+                alt={project.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ) : (
+            <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 rounded-lg mb-6 sm:mb-8 flex items-center justify-center">
+              <Play className="h-12 w-12 sm:h-20 sm:w-20 text-primary/40" />
+            </div>
+          )}
 
           <div className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4">

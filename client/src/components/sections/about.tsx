@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/language-context"
 export function About() {
   const { t } = useLanguage()
   const [animatedStats, setAnimatedStats] = useState(
-    Constants.STATS.map((stat, index) => ({ value: "0", label: "" }))
+    Constants.STATS.map(() => ({ value: "0", label: "" }))
   )
   const statsRef = useRef<HTMLDivElement>(null)
 
