@@ -87,7 +87,7 @@ export function Projects() {
           {/* Scrollable Container */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-4 sm:gap-6 overflow-x-auto scroll-smooth pb-4 px-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            className="flex gap-4 sm:gap-6 overflow-x-auto overflow-y-visible scroll-smooth pb-4 px-1 py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
             style={{
               scrollbarWidth: 'none',
               msOverflowStyle: 'none',

@@ -13,13 +13,11 @@ import {
   Layers,
   PenTool,
   Hash,
-  Triangle,
-  Send,
   Github,
   GitBranch,
-  Box,
-  Play,
+  Send,
   Package,
+  Play,
 } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,13 +37,11 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   Layers,
   PenTool,
   Hash,
-  Triangle,
-  Send,
   Github,
   GitBranch,
-  Box,
-  Play,
+  Send,
   Package,
+  Play,
 }
 
 export function Skills() {
@@ -108,7 +104,7 @@ export function Skills() {
           <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center text-black dark:text-white">
             {t("skills.toolsIUse")}
           </h3>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-3 sm:gap-4">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto overflow-y-visible scroll-smooth pb-4 px-1 py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {Constants.TOOLS_I_USE.map((tool, index) => {
               const Icon = iconMap[tool.icon] || Code
               return (
@@ -119,7 +115,7 @@ export function Skills() {
                   viewport={{ once: false }}
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                   whileHover={{ scale: 1.1 }}
-                  className="flex flex-col items-center gap-2"
+                  className="flex flex-col items-center gap-2 flex-shrink-0 w-[100px] sm:w-[120px]"
                 >
                   <Card className="w-full aspect-square p-3 sm:p-4 border-2 border-primary/20 hover:border-primary/60 hover:shadow-lg transition-all duration-300 cursor-pointer bg-card">
                     <div className="w-full h-full flex items-center justify-center">
@@ -143,8 +139,6 @@ export function Skills() {
           <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center text-black dark:text-white">
             {t("skills.daysICode")}
           </h3>
-          
-          {/* GitHub Contribution Calendar */}
           <Card className="p-4 sm:p-6 bg-card border-2 border-primary/20">
             <CardContent className="p-0">
               <div className="overflow-x-auto pb-2">
