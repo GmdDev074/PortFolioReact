@@ -46,7 +46,7 @@ export function Projects() {
   }
 
   return (
-    <section id="projects" className="py-12 sm:py-16 md:py-24 bg-background">
+    <section id="projects" className="py-5 sm:py-6 md:py-10 bg-background">
       <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

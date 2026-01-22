@@ -67,7 +67,7 @@ export function About() {
   }, [])
 
   return (
-    <section id="about" className="py-12 sm:py-16 md:py-24 bg-gradient-to-br from-background to-primary/5">
+    <section id="about" className="py-5 sm:py-6 md:py-10 bg-gradient-to-br from-background to-primary/5">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Left: Statistics Card */}

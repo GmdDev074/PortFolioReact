@@ -47,7 +47,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 export function Skills() {
   const { t } = useLanguage()
   return (
-    <section id="skills" className="py-12 sm:py-16 md:py-24 bg-background">
+    <section id="skills" className="py-5 sm:py-6 md:py-10 bg-background">
       <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

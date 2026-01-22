@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/language-context"
 export function Process() {
   const { t } = useLanguage()
   return (
-    <section id="process" className="py-12 sm:py-16 md:py-24 bg-gradient-to-br from-background to-muted/20">
+    <section id="process" className="py-5 sm:py-6 md:py-10 bg-gradient-to-br from-background to-muted/20">
       <div className="container mx-auto px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

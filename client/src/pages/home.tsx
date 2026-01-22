@@ -3,7 +3,6 @@ import { Hero } from "@/components/sections/hero"
 import { Skills } from "@/components/sections/skills"
 import { Projects } from "@/components/sections/projects"
 import { Process } from "@/components/sections/process"
-import { Reviews } from "@/components/sections/reviews"
 import { About } from "@/components/sections/about"
 import { Contact } from "@/components/sections/contact"
 
@@ -35,7 +34,6 @@ export function Home() {
       <Skills />
       <Projects />
       <Process />
-      <Reviews />
       <About />
       <Contact />
     </>

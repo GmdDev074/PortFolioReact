@@ -23,7 +23,7 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 pt-16 sm:pt-20">
-      <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16 md:py-24">
+      <div className="container mx-auto px-4 sm:px-6 py-5 sm:py-6 md:py-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
           <motion.div
@@ -32,7 +32,21 @@ export function Hero() {
             transition={{ duration: 0.5 }}
             className="relative inline-flex items-center mb-4 sm:mb-6"
           >
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            {/* Smooth pulsing ring with 50% reduced expansion */}
+            <motion.span
+              className="absolute inline-flex h-full w-full rounded-full bg-primary"
+              initial={{ scale: 1, opacity: 0.6 }}
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.6, 0, 0.6],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: [0.4, 0, 0.6, 1],
+                repeatType: "loop"
+              }}
+            />
             <span className="relative inline-flex rounded-full bg-primary/10 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium text-primary border border-primary/20">
               {t("hero.badge")}
             </span>

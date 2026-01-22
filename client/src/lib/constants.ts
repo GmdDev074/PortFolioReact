@@ -210,34 +210,6 @@ export const Constants = {
     }
   ],
 
-  // Testimonials
-  TESTIMONIALS: [
-    {
-      name: "John Smith",
-      rating: 5.0,
-      text: "Excellent Android developer who delivered our app on time and exceeded expectations. Highly professional and skilled.",
-      avatar: "JS"
-    },
-    {
-      name: "Sarah Johnson",
-      rating: 4.9,
-      text: "The best mobile developer we've worked with. Clean code, modern architecture, and great communication throughout the project.",
-      avatar: "SJ"
-    },
-    {
-      name: "Michael Chen",
-      rating: 5.0,
-      text: "Outstanding work on our Android application. The developer's expertise in Kotlin and Jetpack Compose is impressive.",
-      avatar: "MC"
-    },
-    {
-      name: "Emily Davis",
-      rating: 4.8,
-      text: "Professional, responsive, and technically excellent. Our app is now live on the Play Store and performing great!",
-      avatar: "ED"
-    }
-  ],
-
   // Statistics
   STATS: [
     { value: '20+', label: 'Published Apps' },
