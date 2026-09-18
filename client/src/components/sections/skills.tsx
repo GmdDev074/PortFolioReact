@@ -62,30 +62,29 @@ export function Skills() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12 sm:mb-16">
+        <div className="mb-8 grid auto-rows-fr grid-cols-1 gap-2.5 sm:mb-10 sm:grid-cols-2 lg:grid-cols-3">
           {Constants.SKILLS.map((skill, index) => {
             const Icon = iconMap[skill.icon] || Code
             return (
               <motion.div
                 key={skill.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                transition={{ delay: index * 0.05, duration: 0.35 }}
+                className="h-full"
               >
-                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                  <CardHeader>
-                    <div className="flex items-center gap-4 mb-2">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                        <Icon className="h-6 w-6" />
+                <Card className="flex h-full flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+                  <CardHeader className="pb-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="rounded-md bg-primary/10 p-1.5 text-primary">
+                        <Icon className="h-4 w-4" />
                       </div>
-                      <CardTitle className="text-xl">{skill.title}</CardTitle>
+                      <CardTitle className="text-sm sm:text-base">{skill.title}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-base">
-                      {skill.description}
-                    </CardDescription>
+                  <CardContent className="flex flex-1 flex-col">
+                    <CardDescription>{skill.description}</CardDescription>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -99,12 +98,12 @@ export function Skills() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.5 }}
-          className="mb-12 sm:mb-16"
+          className="mb-8 sm:mb-10"
         >
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center text-black dark:text-white">
+          <h3 className="mb-4 text-center text-lg font-bold text-black dark:text-white sm:mb-5 sm:text-xl md:text-2xl">
             {t("skills.toolsIUse")}
           </h3>
-          <div className="flex gap-3 sm:gap-4 overflow-x-auto overflow-y-visible scroll-smooth pb-4 px-1 py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="mx-auto flex w-fit max-w-full justify-center gap-2 overflow-x-auto px-1 py-1 pb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {Constants.TOOLS_I_USE.map((tool, index) => {
               const Icon = iconMap[tool.icon] || Code
               return (
@@ -113,16 +112,14 @@ export function Skills() {
                   initial={{ opacity: 0, scale: 0.5 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: false }}
-                  transition={{ delay: index * 0.05, duration: 0.3 }}
-                  whileHover={{ scale: 1.1 }}
-                  className="flex flex-col items-center gap-2 flex-shrink-0 w-[100px] sm:w-[120px]"
+                  transition={{ delay: index * 0.04, duration: 0.25 }}
+                  whileHover={{ scale: 1.05 }}
+                  className="flex w-[72px] flex-shrink-0 flex-col items-center gap-1.5 sm:w-[84px]"
                 >
-                  <Card className="w-full aspect-square p-3 sm:p-4 border-2 border-primary/20 hover:border-primary/60 hover:shadow-lg transition-all duration-300 cursor-pointer bg-card">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-                    </div>
+                  <Card className="flex aspect-square w-full cursor-pointer items-center justify-center border border-primary/20 p-2 transition-all duration-200 hover:border-primary/50 hover:shadow-md">
+                    <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" />
                   </Card>
-                  <span className="text-xs sm:text-sm text-muted-foreground text-center">{tool.name}</span>
+                  <span className="text-center text-[10px] text-muted-foreground sm:text-xs">{tool.name}</span>
                 </motion.div>
               )
             })}
@@ -136,12 +133,12 @@ export function Skills() {
           viewport={{ once: false }}
           transition={{ duration: 0.5 }}
         >
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold mb-6 sm:mb-8 text-center text-black dark:text-white">
+          <h3 className="mb-4 text-center text-lg font-bold text-black dark:text-white sm:mb-5 sm:text-xl md:text-2xl">
             {t("skills.daysICode")}
           </h3>
-          <Card className="p-4 sm:p-6 bg-card border-2 border-primary/20">
+          <Card className="border border-primary/20 bg-card p-3 sm:p-4">
             <CardContent className="p-0">
-              <div className="overflow-x-auto pb-2">
+              <div className="overflow-x-auto pb-1">
                 <a
                   href={Constants.PERSONAL.github}
                   target="_blank"
@@ -151,23 +148,23 @@ export function Skills() {
                   <img
                     src={`https://ghchart.rshah.org/GmdDev074`}
                     alt="GitHub Contribution Calendar"
-                    className="w-full h-auto"
+                    className="h-auto w-full"
                   />
                 </a>
               </div>
-              <div className="mt-4 pt-4 border-t border-border">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <p className="text-sm sm:text-base text-muted-foreground text-center sm:text-left">
+              <div className="mt-3 border-t border-border pt-3">
+                <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
+                  <p className="text-center text-xs text-muted-foreground sm:text-left sm:text-sm">
                     <span className="font-semibold text-foreground">534</span> contributions in the last year
                   </p>
-                  <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground sm:text-xs">
                     <span>Less</span>
-                    <div className="flex gap-1">
-                      <div className="w-3 h-3 rounded-sm bg-muted"></div>
-                      <div className="w-3 h-3 rounded-sm bg-primary/20"></div>
-                      <div className="w-3 h-3 rounded-sm bg-primary/40"></div>
-                      <div className="w-3 h-3 rounded-sm bg-primary/60"></div>
-                      <div className="w-3 h-3 rounded-sm bg-primary"></div>
+                    <div className="flex gap-0.5">
+                      <div className="h-2.5 w-2.5 rounded-sm bg-muted"></div>
+                      <div className="h-2.5 w-2.5 rounded-sm bg-primary/20"></div>
+                      <div className="h-2.5 w-2.5 rounded-sm bg-primary/40"></div>
+                      <div className="h-2.5 w-2.5 rounded-sm bg-primary/60"></div>
+                      <div className="h-2.5 w-2.5 rounded-sm bg-primary"></div>
                     </div>
                     <span>More</span>
                   </div>

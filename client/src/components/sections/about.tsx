@@ -79,8 +79,8 @@ export function About() {
             transition={{ duration: 0.5 }}
             className="order-2 lg:order-1"
           >
-            <Card className="p-6 sm:p-8 bg-gradient-to-br from-primary/10 to-primary/5">
-              <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-5">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {animatedStats.map((stat, index) => (
                   <motion.div
                     key={index}
@@ -92,10 +92,10 @@ export function About() {
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     className="text-center"
                   >
-                    <div className="text-3xl sm:text-4xl font-bold text-primary mb-1 sm:mb-2">
+                    <div className="mb-0.5 text-2xl font-bold text-primary sm:text-3xl">
                       {stat.value}
                     </div>
-                    <div className="text-xs sm:text-sm text-muted-foreground">{stat.label}</div>
+                    <div className="text-[11px] text-muted-foreground sm:text-xs">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>

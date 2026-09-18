@@ -47,30 +47,30 @@ export function Contact() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
+        <div className="mx-auto grid max-w-5xl auto-rows-fr grid-cols-1 gap-2.5 md:grid-cols-3">
           {contactInfo.map((info, index) => {
             const Icon = info.icon
             return (
               <motion.a
                 key={index}
                 href={info.href}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="block"
+                transition={{ delay: index * 0.06, duration: 0.35 }}
+                className="block h-full"
               >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <CardHeader>
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary flex-shrink-0">
-                        <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Card className="flex h-full flex-col transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+                  <CardHeader className="pb-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="flex-shrink-0 rounded-md bg-primary/10 p-1.5 text-primary">
+                        <Icon className="h-3.5 w-3.5" />
                       </div>
-                      <CardTitle className="text-base sm:text-lg">{info.title}</CardTitle>
+                      <CardTitle className="text-sm">{info.title}</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm sm:text-base text-muted-foreground break-words">{info.value}</p>
+                    <p className="break-words text-xs text-muted-foreground sm:text-sm">{info.value}</p>
                   </CardContent>
                 </Card>
               </motion.a>

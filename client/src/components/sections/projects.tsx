@@ -1,190 +1,141 @@
 import { motion } from "framer-motion"
-import { useState, useRef, useEffect } from "react"
-import { ExternalLink, Github, Play, ChevronLeft, ChevronRight } from "lucide-react"
-import { Constants } from "@/lib/constants"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { ArrowUpRight, Smartphone } from "lucide-react"
 import { useLocation } from "wouter"
-import { useLanguage } from "@/contexts/language-context"
+import { mobileProjects } from "@/data/projects"
+import type { ProjectListItem } from "@/types/project"
 
-export function Projects() {
+const APP_STORE_ICON = "/icons/app-store.svg"
+const GOOGLE_PLAY_ICON = "/icons/google-play.svg"
+
+function StoreIconButton({
+  href,
+  label,
+  imageSrc,
+}: {
+  href: string
+  label: string
+  imageSrc: string
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-background transition-colors hover:bg-muted"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <img src={imageSrc} alt="" className="h-3.5 w-3.5 object-contain" />
+    </a>
+  )
+}
+
+function ProjectCard({ project, index }: { project: ProjectListItem; index: number }) {
   const [, setLocation] = useLocation()
-  const { t } = useLanguage()
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [canScrollLeft, setCanScrollLeft] = useState(false)
-  const [canScrollRight, setCanScrollRight] = useState(true)
-
-  const checkScrollButtons = () => {
-    if (scrollContainerRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current
-      setCanScrollLeft(scrollLeft > 0)
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
-    }
-  }
-
-  useEffect(() => {
-    checkScrollButtons()
-    const container = scrollContainerRef.current
-    if (container) {
-      container.addEventListener('scroll', checkScrollButtons)
-      window.addEventListener('resize', checkScrollButtons)
-      return () => {
-        container.removeEventListener('scroll', checkScrollButtons)
-        window.removeEventListener('resize', checkScrollButtons)
-      }
-    }
-  }, [])
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = scrollContainerRef.current.clientWidth * 0.8
-      scrollContainerRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
-    }
-  }
 
   return (
-    <section id="projects" className="py-5 sm:py-6 md:py-10 bg-background">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.28, delay: index * 0.04 }}
+      whileHover={{ y: -2 }}
+      className="group rounded-xl border border-border bg-card p-3 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md"
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-primary/10">
+          <Smartphone className="h-3 w-3 text-primary" />
+        </div>
+        <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
+          {project.name}
+        </h3>
+        {project.featured && (
+          <span className="shrink-0 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary-foreground">
+            Featured
+          </span>
+        )}
+      </div>
+
+      <p className="mb-2.5 text-[11px] leading-snug text-muted-foreground line-clamp-2 sm:text-xs">
+        {project.tagline}
+      </p>
+
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setLocation(project.detailPath!)}
+          className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-semibold text-foreground transition-colors hover:bg-muted sm:text-xs"
+        >
+          Explore Project
+          <ArrowUpRight className="h-3 w-3" />
+        </button>
+
+        {(project.playStore || project.appStore) && (
+          <div className="flex shrink-0 items-center gap-1">
+            {project.appStore && (
+              <StoreIconButton
+                href={project.appStore}
+                label={`${project.name} on the App Store`}
+                imageSrc={APP_STORE_ICON}
+              />
+            )}
+            {project.playStore && (
+              <StoreIconButton
+                href={project.playStore}
+                label={`${project.name} on Google Play`}
+                imageSrc={GOOGLE_PLAY_ICON}
+              />
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2">
+        <span className="inline-flex rounded-full bg-primary/10 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary">
+          Mobile App
+        </span>
+      </div>
+    </motion.div>
+  )
+}
+
+export function Projects() {
+  return (
+    <section id="projects" className="bg-muted/40 py-5 sm:py-7 md:py-8">
       <div className="container mx-auto px-4 sm:px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8 sm:mb-12"
+          viewport={{ once: true }}
+          transition={{ duration: 0.35 }}
+          className="mb-5 text-center sm:mb-6"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">{t("projects.title")}</h2>
-          <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-4 sm:px-0">
-            {t("projects.subtitle")}
+          <p className="mb-1.5 text-xs font-semibold tracking-widest text-primary uppercase">
+            Selected Work
+          </p>
+          <h2 className="mb-1.5 text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">
+            A Slice of Projects
+          </h2>
+          <p className="mx-auto max-w-2xl text-xs text-muted-foreground sm:text-sm">
+            We don't list everything — just a few live products that show the
+            range. Apps on the Play Store, platforms in production, and
+            everything in between.
           </p>
         </motion.div>
 
-        <div className="relative">
-          {/* Left Arrow */}
-          {canScrollLeft && (
-            <button
-              onClick={() => scroll('left')}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full p-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-lg hover:scale-110 hidden sm:flex items-center justify-center"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="h-6 w-6" />
-            </button>
-          )}
+        <div className="mb-3 flex items-center gap-2">
+          <Smartphone className="h-3.5 w-3.5 text-primary" />
+          <h3 className="text-xs font-semibold tracking-wide text-foreground uppercase">
+            Mobile Applications
+          </h3>
+        </div>
 
-          {/* Right Arrow */}
-          {canScrollRight && (
-            <button
-              onClick={() => scroll('right')}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-background/80 backdrop-blur-sm border border-border rounded-full p-2 hover:bg-primary hover:text-primary-foreground transition-all duration-300 shadow-lg hover:scale-110 hidden sm:flex items-center justify-center"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
-          )}
-
-          {/* Scrollable Container */}
-          <div
-            ref={scrollContainerRef}
-            className="flex gap-4 sm:gap-6 overflow-x-auto overflow-y-visible scroll-smooth pb-4 px-1 py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-            style={{
-              scrollbarWidth: 'none',
-              msOverflowStyle: 'none',
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
-            {Constants.PROJECTS.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                className="flex-shrink-0 w-[300px] sm:w-[350px] md:w-[400px]"
-              >
-                <Card className="h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
-                  {project.image ? (
-                    <div className="aspect-video overflow-hidden bg-gradient-to-br from-primary/20 to-primary/5">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="aspect-video bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                      <Play className="h-12 w-12 text-primary/40" />
-                    </div>
-                  )}
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <CardTitle className="text-lg sm:text-xl flex-1">{project.title}</CardTitle>
-                      <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary whitespace-nowrap flex-shrink-0">
-                        {project.category}
-                      </span>
-                    </div>
-                    <CardDescription className="text-sm sm:text-base line-clamp-3">
-                      {(project as any).shortDescription || project.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.techStack.slice(0, 4).map((tech, techIndex) => (
-                        <span
-                          key={techIndex}
-                          className="text-xs px-2 py-1 rounded bg-muted text-muted-foreground"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                      {project.techStack.length > 4 && (
-                        <span className="text-xs px-2 py-1 rounded bg-muted text-muted-foreground">
-                          +{project.techStack.length - 4}
-                        </span>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {project.githubUrl && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.open(project.githubUrl!, "_blank")}
-                          className="hover:bg-primary hover:text-primary-foreground hover:scale-105 transition-all duration-300 cursor-pointer"
-                        >
-                          <Github className="h-4 w-4 mr-2" />
-                          {t("projects.button.github")}
-                        </Button>
-                      )}
-                      {project.playStoreUrl && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => window.open(project.playStoreUrl!, "_blank")}
-                          className="hover:bg-primary hover:text-primary-foreground hover:scale-105 transition-all duration-300 cursor-pointer"
-                        >
-                          <Play className="h-4 w-4 mr-2" />
-                          {t("projects.button.playStore")}
-                        </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setLocation(`/project/${project.id}`)}
-                        className="hover:bg-primary hover:text-primary-foreground hover:scale-105 transition-all duration-300 cursor-pointer"
-                      >
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        {t("projects.button.details")}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 items-start gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {mobileProjects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
+          ))}
         </div>
       </div>
     </section>
   )
 }
-

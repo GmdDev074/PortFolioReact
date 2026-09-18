@@ -13,7 +13,7 @@ import { NotFound } from "@/pages/not-found"
 import { queryClient } from "@/lib/queryClient"
 
 function AppContent() {
-  const [isDetailPage] = useRoute("/project/:id")
+  const [isDetailPage] = useRoute("/projects/:id")
   const [isResumePage] = useRoute("/resume")
 
   const shouldHideNavbarFooter = isDetailPage || isResumePage
@@ -24,7 +24,7 @@ function AppContent() {
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/project/:id" component={ProjectDetail} />
+          <Route path="/projects/:id" component={ProjectDetail} />
           <Route path="/resume" component={Resume} />
           <Route component={NotFound} />
         </Switch>
@@ -49,4 +49,3 @@ function App() {
 }
 
 export default App
-
