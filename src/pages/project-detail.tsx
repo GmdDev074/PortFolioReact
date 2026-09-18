@@ -65,9 +65,9 @@ export function ProjectDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen glass-section">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-background py-5 md:py-7">
+      <section className="relative overflow-hidden py-5 md:py-7">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5" />
         <div className="container relative z-10 mx-auto px-4 sm:px-6">
           <button
@@ -136,7 +136,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Platform / Services */}
-      <section className="bg-muted/40 py-5 md:py-6">
+      <section className="bg-muted/15 py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div {...sectionFade} className="mb-5 text-center">
             <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
@@ -171,7 +171,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Problem & Solution */}
-      <section className="bg-background py-5 md:py-6">
+      <section className="py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 auto-rows-fr gap-2.5 lg:grid-cols-2">
             <motion.div {...sectionFade} className="h-full">
@@ -226,7 +226,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Tech Stack */}
-      <section className="bg-muted/40 py-5 md:py-6">
+      <section className="bg-muted/15 py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div {...sectionFade} className="mb-5 text-center">
             <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
@@ -267,7 +267,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Architecture */}
-      <section className="bg-background py-5 md:py-6">
+      <section className="py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div {...sectionFade} className="mb-5 text-center">
             <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
@@ -315,7 +315,7 @@ export function ProjectDetail() {
       </section>
 
       {/* User Journey */}
-      <section className="bg-muted/40 py-5 md:py-6">
+      <section className="bg-muted/15 py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div {...sectionFade} className="mb-5 text-center">
             <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
@@ -353,7 +353,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Engineering */}
-      <section className="bg-background py-5 md:py-6">
+      <section className="py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <motion.div {...sectionFade} className="mb-5 text-center">
             <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
@@ -385,7 +385,7 @@ export function ProjectDetail() {
       </section>
 
       {/* Key Features + Second Carousel */}
-      <section className="bg-muted/40 py-5 md:py-6">
+      <section className="bg-muted/15 py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-8">
             <motion.div {...sectionFade}>

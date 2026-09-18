@@ -29,7 +29,7 @@ export function Contact() {
   ]
 
   return (
-    <section id="contact" data-snap className="bg-background py-5 sm:py-6 md:py-10">
+    <section id="contact" data-snap className="glass-section py-5 sm:py-6 md:py-10">
       <div className="container mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-8 text-center sm:mb-12">
           <p className="mb-2 text-sm font-medium text-primary sm:text-base">
@@ -52,7 +52,7 @@ export function Contact() {
             return (
               <StaggerItem key={info.title} className="h-full">
                 <a href={info.href} className="block h-full">
-                  <Card className="group flex h-full flex-col transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-primary/35 hover:shadow-md">
+                  <Card className="group flex h-full flex-col hover:-translate-y-1">
                     <CardHeader className="pb-1.5">
                       <div className="flex items-center gap-2.5">
                         <div className="flex-shrink-0 rounded-md bg-primary/10 p-1.5 text-primary transition-transform duration-300 ease-out group-hover:scale-105">

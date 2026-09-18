@@ -15,8 +15,12 @@ const iconMap = {
 export function Footer() {
   const { t } = useLanguage()
   return (
-    <footer className="bg-slate-900 py-12 text-slate-50 sm:py-16 lg:pb-16 pb-28">
-      <div className="container mx-auto px-4 sm:px-6">
+    <footer className="relative overflow-hidden bg-slate-950 py-12 text-slate-50 sm:py-16 lg:pb-16 pb-28">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(800px_circle_at_20%_0%,hsl(221_83%_53%/0.12),transparent_55%)]"
+      />
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <div className="mb-6 grid grid-cols-1 gap-6 sm:mb-8 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
           <FadeIn>
             <h3 className="mb-3 text-xl font-bold sm:mb-4 sm:text-2xl">
@@ -59,7 +63,7 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-800 text-slate-50 transition-colors duration-200 hover:bg-primary"
+                    className="glass-icon inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-slate-50 transition-colors duration-200 hover:border-primary/40 hover:bg-primary"
                     whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.96 }}
                     transition={transition.fast}

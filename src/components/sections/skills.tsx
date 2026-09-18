@@ -1,4 +1,4 @@
-import type { ComponentType } from "react"
+import { useEffect, useState, type ComponentType } from "react"
 import {
   Code,
   Coffee,
@@ -22,7 +22,9 @@ import {
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
+import { Carousel } from "@/components/ui/carousel"
 import { useLanguage } from "@/contexts/language-context"
+import { cn } from "@/lib/utils"
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Code,
@@ -45,10 +47,50 @@ const iconMap: Record<string, ComponentType<{ className?: string }>> = {
   Play,
 }
 
+function useIsMobile(maxWidth = 767) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia(`(max-width: ${maxWidth}px)`)
+    const update = () => setIsMobile(media.matches)
+    update()
+    media.addEventListener("change", update)
+    return () => media.removeEventListener("change", update)
+  }, [maxWidth])
+
+  return isMobile
+}
+
+function ToolTile({
+  name,
+  icon: Icon,
+  className,
+}: {
+  name: string
+  icon: ComponentType<{ className?: string }>
+  className?: string
+}) {
+  return (
+    <div className={cn("flex w-[72px] flex-col items-center gap-1.5 sm:w-[84px]", className)}>
+      <Card className="group flex aspect-square w-full cursor-pointer items-center justify-center p-2 transition-transform duration-300 ease-out hover:-translate-y-1">
+        <Icon className="h-5 w-5 text-primary transition-transform duration-300 ease-out group-hover:scale-105 sm:h-6 sm:w-6" />
+      </Card>
+      <span className="text-center text-[10px] text-muted-foreground sm:text-xs">{name}</span>
+    </div>
+  )
+}
+
 export function Skills() {
   const { t } = useLanguage()
+  const isMobile = useIsMobile()
+
+  const toolTiles = Constants.TOOLS_I_USE.map((tool, index) => {
+    const Icon = iconMap[tool.icon] || Code
+    return <ToolTile key={`${tool.name}-${index}`} name={tool.name} icon={Icon} />
+  })
+
   return (
-    <section id="skills" data-snap className="bg-background py-5 sm:py-6 md:py-10">
+    <section id="skills" data-snap className="glass-section py-5 sm:py-6 md:py-10">
       <div className="container mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-8 text-center sm:mb-12">
           <h2 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl md:text-4xl">
@@ -61,13 +103,13 @@ export function Skills() {
 
         <StaggerContainer
           fast
-          className="mb-8 grid auto-rows-fr grid-cols-1 gap-2.5 sm:mb-10 sm:grid-cols-2 lg:grid-cols-3"
+          className="mb-8 grid auto-rows-fr grid-cols-1 gap-2.5 overflow-visible pt-1 sm:mb-10 sm:grid-cols-2 lg:grid-cols-3"
         >
           {Constants.SKILLS.map((skill) => {
             const Icon = iconMap[skill.icon] || Code
             return (
-              <StaggerItem key={skill.id} className="h-full">
-                <Card className="group flex h-full flex-col transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-primary/35 hover:shadow-md">
+              <StaggerItem key={skill.id} className="h-full overflow-visible">
+                <Card className="group flex h-full flex-col transition-transform duration-300 ease-out hover:-translate-y-1">
                   <CardHeader className="pb-1.5">
                     <div className="flex items-center gap-2.5">
                       <div className="rounded-md bg-primary/10 p-1.5 text-primary transition-transform duration-300 ease-out group-hover:scale-105">
@@ -85,40 +127,40 @@ export function Skills() {
           })}
         </StaggerContainer>
 
-        <SectionReveal className="mb-8 sm:mb-10">
+        <SectionReveal className="mb-8 overflow-visible sm:mb-10">
           <h3 className="mb-4 text-center text-lg font-bold text-black dark:text-white sm:mb-5 sm:text-xl md:text-2xl">
             {t("skills.toolsIUse")}
           </h3>
-          <StaggerContainer
-            fast
-            className="mx-auto flex w-fit max-w-full justify-center gap-2 overflow-x-auto px-1 py-1 pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {Constants.TOOLS_I_USE.map((tool, index) => {
-              const Icon = iconMap[tool.icon] || Code
-              return (
-                <StaggerItem
-                  key={index}
-                  className="flex w-[72px] flex-shrink-0 flex-col items-center gap-1.5 sm:w-[84px]"
-                >
-                  <Card className="group flex aspect-square w-full cursor-pointer items-center justify-center border border-primary/20 p-2 transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:border-primary/45 hover:shadow-md">
-                    <Icon className="h-5 w-5 text-primary transition-transform duration-300 ease-out group-hover:scale-105 sm:h-6 sm:w-6" />
-                  </Card>
-                  <span className="text-center text-[10px] text-muted-foreground sm:text-xs">
-                    {tool.name}
-                  </span>
-                </StaggerItem>
-              )
-            })}
-          </StaggerContainer>
+
+          {isMobile ? (
+            <Carousel
+              autoScroll
+              pauseOnHover
+              gapClassName="gap-2.5"
+              itemClassName="flex-shrink-0"
+              className="mx-auto max-w-full"
+            >
+              {toolTiles}
+            </Carousel>
+          ) : (
+            <div className="mx-auto flex w-fit max-w-full flex-wrap justify-center gap-2 overflow-visible px-1 pt-3 pb-2">
+              {Constants.TOOLS_I_USE.map((tool, index) => {
+                const Icon = iconMap[tool.icon] || Code
+                return (
+                  <ToolTile key={`${tool.name}-${index}`} name={tool.name} icon={Icon} />
+                )
+              })}
+            </div>
+          )}
         </SectionReveal>
 
         <SectionReveal>
           <h3 className="mb-4 text-center text-lg font-bold text-black dark:text-white sm:mb-5 sm:text-xl md:text-2xl">
             {t("skills.daysICode")}
           </h3>
-          <Card className="border border-primary/20 bg-card p-3 sm:p-4">
+          <Card className="p-3 sm:p-4">
             <CardContent className="p-0">
-              <div className="overflow-x-auto pb-1">
+              <div className="overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <a
                   href={Constants.PERSONAL.github}
                   target="_blank"

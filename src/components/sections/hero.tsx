@@ -65,7 +65,7 @@ export function Hero() {
       id="home"
       data-snap
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-primary/5 pb-24 pt-16 sm:pt-20 lg:pb-0"
+      className="relative flex min-h-screen items-center justify-center overflow-hidden glass-section pb-24 pt-16 sm:pt-20 lg:pb-0"
     >
       <div className="container relative z-10 mx-auto px-4 py-5 sm:px-6 sm:py-6 md:py-10">
         <div className="mx-auto max-w-4xl text-center">

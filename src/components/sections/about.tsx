@@ -22,12 +22,12 @@ export function About() {
     <section
       id="about"
       data-snap
-      className="bg-gradient-to-br from-background to-primary/5 py-5 sm:py-6 md:py-10"
+      className="glass-section py-5 sm:py-6 md:py-10"
     >
       <div className="container mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 items-center gap-8 sm:gap-12 lg:grid-cols-2">
           <SectionReveal className="order-2 lg:order-1">
-            <Card className="bg-gradient-to-br from-primary/10 to-primary/5 p-4 sm:p-5">
+            <Card className="bg-gradient-to-br from-primary/15 to-primary/5 p-4 sm:p-5">
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {Constants.STATS.map((stat, index) => (
                   <div key={stat.label} className="text-center">

@@ -60,7 +60,7 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="relative overflow-hidden rounded-xl border border-border bg-slate-900 shadow-md">
+      <div className="relative overflow-hidden rounded-xl glass-card shadow-md">
         <div
           className="relative aspect-[9/19] max-h-[380px] w-full touch-pan-y sm:aspect-[9/16] sm:max-h-[420px]"
           onTouchStart={(e) => {

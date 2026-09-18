@@ -27,7 +27,7 @@ function StoreIconButton({
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-background transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-muted"
+      className="flex h-6 w-6 items-center justify-center rounded-md glass-icon transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:border-primary/30"
       onClick={(e) => e.stopPropagation()}
     >
       <img src={imageSrc} alt="" className="h-3.5 w-3.5 object-contain" />
@@ -50,30 +50,24 @@ function ProjectCard({
 
   return (
     <motion.div
-      initial={
-        prefersReduced ? false : { opacity: 0, y: 12, clipPath: "inset(6% 0 0 0)" }
-      }
-      whileInView={
-        prefersReduced
-          ? undefined
-          : { opacity: 1, y: 0, clipPath: "inset(0% 0 0 0)" }
-      }
+      initial={prefersReduced ? false : { opacity: 0, y: 12 }}
+      whileInView={prefersReduced ? undefined : { opacity: 1, y: 0 }}
       viewport={viewportOnce}
       transition={transition.reveal}
-      className="h-full"
+      className="h-full overflow-visible"
       onHoverStart={() => canFocus && onHoverChange(project.id)}
       onHoverEnd={() => canFocus && onHoverChange(null)}
     >
       <motion.div
         animate={{ opacity: canFocus && dimmed ? 0.78 : 1 }}
         transition={transition.hover}
-        className="h-full"
+        className="h-full overflow-visible"
       >
         <div
           className={cn(
-            "group h-full rounded-xl border border-border bg-card p-3 shadow-sm",
-            "transition-[transform,border-color,box-shadow] duration-300 ease-out",
-            "hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+            "group h-full glass-card glass-card-hover rounded-xl p-3",
+            "transition-transform duration-300 ease-out",
+            "hover:-translate-y-1"
           )}
         >
           <div className="mb-2 flex items-center gap-2 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
@@ -98,7 +92,7 @@ function ProjectCard({
             <button
               type="button"
               onClick={() => setLocation(project.detailPath!)}
-              className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-border bg-background px-2.5 py-1 text-[11px] font-semibold text-foreground transition-[background-color,border-color] duration-300 ease-out hover:border-primary/30 hover:bg-muted sm:text-xs"
+              className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-[background-color,border-color] duration-300 ease-out hover:border-primary/35 hover:bg-primary/10 sm:text-xs"
             >
               Explore Project
               <ArrowUpRight className="h-3 w-3 transition-transform duration-300 ease-out group-hover:translate-x-1" />
@@ -139,7 +133,7 @@ export function Projects() {
   const [hoveredId, setHoveredId] = useState<string | null>(null)
 
   return (
-    <section id="projects" data-snap className="bg-muted/40 py-5 sm:py-7 md:py-8">
+    <section id="projects" data-snap className="glass-section py-5 sm:py-7 md:py-8">
       <div className="container mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-5 text-center sm:mb-6">
           <p className="mb-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
@@ -161,7 +155,7 @@ export function Projects() {
           </h3>
         </SectionReveal>
 
-        <div className="grid grid-cols-1 items-start gap-2.5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 items-start gap-2.5 overflow-visible pt-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {mobileProjects.map((project) => (
             <ProjectCard
               key={project.id}
