@@ -80,11 +80,7 @@ export function ProjectDetail() {
           </button>
 
           <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35 }}
-            >
+            <div>
               <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
                 Case Study
               </p>
@@ -130,16 +126,11 @@ export function ProjectDetail() {
                   </Button>
                 )}
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.35, delay: 0.05 }}
-              className="mx-auto w-full max-w-[220px] sm:max-w-[260px] lg:max-w-[300px]"
-            >
+            <div className="mx-auto w-full max-w-[220px] sm:max-w-[260px] lg:max-w-[300px]">
               <ImageCarousel images={project.images} alt={project.name} />
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

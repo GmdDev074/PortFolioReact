@@ -8,10 +8,14 @@ export interface ButtonProps
 }
 
 const variantClasses = {
-  default: "bg-primary text-primary-foreground hover:bg-primary/90",
-  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-  outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+  default:
+    "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-[0_8px_24px_-12px_hsl(var(--primary)/0.55)]",
+  destructive:
+    "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+  outline:
+    "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-primary/40",
+  secondary:
+    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
   ghost: "hover:bg-accent hover:text-accent-foreground",
   link: "text-primary underline-offset-4 hover:underline",
 }
@@ -28,7 +32,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium ring-offset-background",
+          "transition-[transform,color,background-color,border-color,box-shadow] duration-200 ease-out",
+          "hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "disabled:pointer-events-none disabled:opacity-50",
+          "[&_svg]:transition-transform [&_svg]:duration-200 hover:[&_svg]:translate-x-0.5",
           variantClasses[variant],
           sizeClasses[size],
           className
@@ -42,4 +51,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button }
-

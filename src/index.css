@@ -62,3 +62,58 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (min-width: 1024px) {
+  html {
+    scroll-snap-type: y proximity;
+  }
+
+  section[data-snap] {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer utilities {
+  .ambient-blob {
+    animation: ambient-drift 18s ease-in-out infinite alternate;
+  }
+
+  .ambient-blob-delayed {
+    animation: ambient-drift 22s ease-in-out infinite alternate-reverse;
+  }
+}
+
+@keyframes ambient-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12px, -10px, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(-8px, 8px, 0) scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-blob,
+  .ambient-blob-delayed {
+    animation: none;
+  }
+}

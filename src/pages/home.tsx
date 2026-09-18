@@ -8,24 +8,22 @@ import { Contact } from "@/components/sections/contact"
 
 export function Home() {
   useEffect(() => {
-    // Handle hash navigation on mount
     const hash = window.location.hash
-    if (hash) {
-      // Small delay to ensure DOM is ready
-      setTimeout(() => {
-        const element = document.querySelector(hash) as HTMLElement
-        if (element) {
-          // Get navbar height dynamically
-          const navbar = document.querySelector("nav")
-          const navbarHeight = navbar ? navbar.offsetHeight : 80
-          const elementPosition = element.offsetTop - navbarHeight
-          window.scrollTo({
-            top: Math.max(0, elementPosition),
-            behavior: "smooth"
-          })
-        }
-      }, 100)
-    }
+    if (!hash) return
+
+    const timeout = window.setTimeout(() => {
+      const element = document.querySelector(hash) as HTMLElement | null
+      if (!element) return
+      const navbar = document.querySelector("nav")
+      const navbarHeight = navbar ? navbar.offsetHeight : 80
+      const elementPosition = element.offsetTop - navbarHeight
+      window.scrollTo({
+        top: Math.max(0, elementPosition),
+        behavior: "smooth",
+      })
+    }, 120)
+
+    return () => window.clearTimeout(timeout)
   }, [])
 
   return (
@@ -39,4 +37,3 @@ export function Home() {
     </>
   )
 }
-

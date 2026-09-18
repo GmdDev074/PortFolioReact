@@ -1,7 +1,9 @@
 import { motion } from "framer-motion"
 import { Github, Linkedin, Twitter, Play } from "lucide-react"
 import { Constants } from "@/lib/constants"
+import { FadeIn } from "@/components/motion/reveal"
 import { useLanguage } from "@/contexts/language-context"
+import { transition } from "@/lib/motion"
 
 const iconMap = {
   Github,
@@ -13,28 +15,20 @@ const iconMap = {
 export function Footer() {
   const { t } = useLanguage()
   return (
-    <footer className="bg-slate-900 text-slate-50 py-12 sm:py-16">
+    <footer className="bg-slate-900 py-12 text-slate-50 sm:py-16">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
-          {/* About */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.5 }}
-          >
-            <h3 className="text-xl sm:text-2xl font-bold mb-3 sm:mb-4">{Constants.PERSONAL.name}</h3>
-            <p className="text-sm sm:text-base text-slate-400">{t("footer.description")}</p>
-          </motion.div>
+        <div className="mb-6 grid grid-cols-1 gap-6 sm:mb-8 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
+          <FadeIn>
+            <h3 className="mb-3 text-xl font-bold sm:mb-4 sm:text-2xl">
+              {Constants.PERSONAL.name}
+            </h3>
+            <p className="text-sm text-slate-400 sm:text-base">{t("footer.description")}</p>
+          </FadeIn>
 
-          {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("footer.quickLinks")}</h4>
+          <FadeIn delay={0.06}>
+            <h4 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
+              {t("footer.quickLinks")}
+            </h4>
             <ul className="flex flex-col gap-2">
               {Constants.FOOTER.links.map((link) => {
                 const linkKey = link.name.toLowerCase()
@@ -42,7 +36,7 @@ export function Footer() {
                   <li key={link.href}>
                     <a
                       href={link.href}
-                      className="text-sm sm:text-base text-slate-400 hover:text-primary transition-colors"
+                      className="text-sm text-slate-400 transition-colors duration-200 hover:text-primary sm:text-base"
                     >
                       {t(`footer.links.${linkKey}`)}
                     </a>
@@ -50,17 +44,13 @@ export function Footer() {
                 )
               })}
             </ul>
-          </motion.div>
+          </FadeIn>
 
-          {/* Social Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <h4 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t("footer.connect")}</h4>
-            <div className="flex gap-3 sm:gap-4">
+          <FadeIn delay={0.1}>
+            <h4 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
+              {t("footer.connect")}
+            </h4>
+            <div className="flex items-center gap-3 sm:gap-4">
               {Constants.FOOTER.social.map((social) => {
                 const Icon = iconMap[social.icon as keyof typeof iconMap]
                 return (
@@ -69,28 +59,27 @@ export function Footer() {
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="p-2 rounded-full bg-slate-800 hover:bg-primary transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-800 text-slate-50 transition-colors duration-200 hover:bg-primary"
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.96 }}
+                    transition={transition.fast}
+                    aria-label={social.name}
                   >
-                    {Icon && <Icon size={18} className="sm:w-5 sm:h-5" />}
+                    {Icon && <Icon className="h-[18px] w-[18px] sm:h-5 sm:w-5" />}
                   </motion.a>
                 )
               })}
             </div>
-          </motion.div>
+          </FadeIn>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: false }}
-          className="border-t border-slate-800 pt-6 sm:pt-8 text-center text-slate-400"
-        >
-          <p className="text-xs sm:text-sm">&copy; {new Date().getFullYear()} {Constants.PERSONAL.name}. {t("footer.allRightsReserved")}</p>
-        </motion.div>
+        <FadeIn className="border-t border-slate-800 pt-6 text-center text-slate-400 sm:pt-8">
+          <p className="text-xs sm:text-sm">
+            &copy; {new Date().getFullYear()} {Constants.PERSONAL.name}.{" "}
+            {t("footer.allRightsReserved")}
+          </p>
+        </FadeIn>
       </div>
     </footer>
   )
 }
-
