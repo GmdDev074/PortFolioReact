@@ -33,7 +33,7 @@ A modern, responsive portfolio website showcasing Android development projects a
 ## 📁 Project Structure
 
 ```
-client/
+.
 ├── public/                 # Static assets
 │   ├── project_images/    # Project showcase images
 │   └── resume/            # Resume PDF file
@@ -156,25 +156,20 @@ client/
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd PortFolio
+   cd PortFolioReact
    ```
 
-2. **Navigate to client directory**
-   ```bash
-   cd client
-   ```
-
-3. **Install dependencies**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-4. **Start development server**
+3. **Start development server**
    ```bash
    npm run dev
    ```
 
-5. **Open in browser**
+4. **Open in browser**
    - Navigate to `http://localhost:5173`
 
 ### Build for Production
@@ -228,7 +223,6 @@ Edit `src/index.css` for CSS variables and `tailwind.config.js` for Tailwind the
 
 1. **Build the project**
    ```bash
-   cd client
    npm run build
    ```
 
@@ -237,13 +231,12 @@ Edit `src/index.css` for CSS variables and `tailwind.config.js` for Tailwind the
    - Or connect your Git repository for auto-deployment
 
 3. **Configure Build Settings** (if using Git)
-   - Build command: `cd client && npm run build`
-   - Publish directory: `client/dist`
+   - Build command: `npm run build`
+   - Publish directory: `dist`
 
 ### Vercel
 
 ```bash
-cd client
 npm run build
 vercel deploy dist
 ```
@@ -321,4 +314,3 @@ SOFTWARE.
 ---
 
 Built with ❤️ using React, TypeScript, and Vite
-
