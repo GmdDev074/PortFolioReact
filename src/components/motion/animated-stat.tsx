@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
-import { useInView, useMotionValue, useSpring } from "framer-motion"
+import { animate, useInView, useMotionValue } from "framer-motion"
 import { useMotionEnabled } from "@/hooks/use-motion-prefs"
+import { EASE_OUT } from "@/lib/motion"
 
 function parseStat(value: string) {
   const match = value.match(/^(\d+(?:\.\d+)?)(.*)$/)
@@ -20,7 +21,6 @@ export function AnimatedStat({
   const isInView = useInView(ref, { once: true, margin: "-40px" })
   const { target, suffix } = parseStat(value)
   const motionValue = useMotionValue(0)
-  const spring = useSpring(motionValue, { stiffness: 70, damping: 22 })
   const [display, setDisplay] = useState(`0${suffix}`)
   const started = useRef(false)
 
@@ -33,19 +33,18 @@ export function AnimatedStat({
       return
     }
 
-    motionValue.set(0)
-    motionValue.set(target)
-  }, [isInView, motionEnabled, motionValue, target, value])
-
-  useEffect(() => {
-    if (!motionEnabled) return
-    const unsubscribe = spring.on("change", (latest) => {
-      const rounded =
-        target % 1 === 0 ? Math.round(latest) : Number(latest.toFixed(1))
-      setDisplay(`${rounded}${suffix}`)
+    const controls = animate(0, target, {
+      duration: 0.7,
+      ease: EASE_OUT,
+      onUpdate: (latest) => {
+        const rounded =
+          target % 1 === 0 ? Math.round(latest) : Number(latest.toFixed(1))
+        setDisplay(`${rounded}${suffix}`)
+      },
     })
-    return unsubscribe
-  }, [motionEnabled, spring, suffix, target])
+
+    return () => controls.stop()
+  }, [isInView, motionEnabled, motionValue, target, suffix, value])
 
   return (
     <span ref={ref} className={className}>

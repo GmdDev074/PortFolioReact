@@ -25,7 +25,7 @@ export function Footer() {
             <p className="text-sm text-slate-400 sm:text-base">{t("footer.description")}</p>
           </FadeIn>
 
-          <FadeIn delay={0.06}>
+          <FadeIn>
             <h4 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
               {t("footer.quickLinks")}
             </h4>
@@ -46,7 +46,7 @@ export function Footer() {
             </ul>
           </FadeIn>
 
-          <FadeIn delay={0.1}>
+          <FadeIn>
             <h4 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
               {t("footer.connect")}
             </h4>

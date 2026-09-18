@@ -12,7 +12,7 @@ import { Magnetic } from "@/components/motion/magnetic"
 import { useLanguage } from "@/contexts/language-context"
 import { useLocation } from "wouter"
 import { useCanHoverInteract } from "@/hooks/use-motion-prefs"
-import { EASE_OUT, transition } from "@/lib/motion"
+import { transition } from "@/lib/motion"
 
 export function Hero() {
   const { t } = useLanguage()
@@ -23,13 +23,13 @@ export function Hero() {
 
   const mouseX = useMotionValue(0)
   const mouseY = useMotionValue(0)
-  const springX = useSpring(mouseX, { stiffness: 60, damping: 20 })
-  const springY = useSpring(mouseY, { stiffness: 60, damping: 20 })
+  const springX = useSpring(mouseX, { stiffness: 50, damping: 22, mass: 0.4 })
+  const springY = useSpring(mouseY, { stiffness: 50, damping: 22, mass: 0.4 })
 
-  const blobOneX = useTransform(springX, [-0.5, 0.5], [-6, 6])
-  const blobOneY = useTransform(springY, [-0.5, 0.5], [-6, 6])
-  const blobTwoX = useTransform(springX, [-0.5, 0.5], [12, -12])
-  const blobTwoY = useTransform(springY, [-0.5, 0.5], [10, -10])
+  const blobOneX = useTransform(springX, [-0.5, 0.5], [-5, 5])
+  const blobOneY = useTransform(springY, [-0.5, 0.5], [-5, 5])
+  const blobTwoX = useTransform(springX, [-0.5, 0.5], [10, -10])
+  const blobTwoY = useTransform(springY, [-0.5, 0.5], [8, -8])
 
   const handleMouseMove = (event: MouseEvent<HTMLElement>) => {
     if (!canParallax || !sectionRef.current) return
@@ -50,12 +50,14 @@ export function Hero() {
     setLocation("/resume")
   }
 
-  const reveal = prefersReduced
-    ? { initial: false, animate: { opacity: 1, y: 0 } }
-    : {
-        initial: { opacity: 0, y: 28 },
-        animate: { opacity: 1, y: 0 },
-      }
+  const stage = (y: number, delay: number) =>
+    prefersReduced
+      ? { initial: false as const, animate: { opacity: 1, y: 0 }, transition: { duration: 0 } }
+      : {
+          initial: { opacity: 0, y },
+          animate: { opacity: 1, y: 0 },
+          transition: { ...transition.reveal, delay },
+        }
 
   return (
     <section
@@ -68,19 +70,18 @@ export function Hero() {
       <div className="container relative z-10 mx-auto px-4 py-5 sm:px-6 sm:py-6 md:py-10">
         <div className="mx-auto max-w-4xl text-center">
           <motion.div
-            {...reveal}
-            transition={{ ...transition.slow, delay: 0.05 }}
+            {...stage(10, 0.04)}
             className="relative mb-4 inline-flex items-center sm:mb-6"
           >
             {!prefersReduced && (
               <motion.span
-                className="absolute inline-flex h-full w-full rounded-full bg-primary"
-                initial={{ scale: 1, opacity: 0.45 }}
-                animate={{ scale: [1, 1.35, 1], opacity: [0.45, 0, 0.45] }}
+                aria-hidden
+                className="absolute inset-0 rounded-full bg-primary/25"
+                animate={{ opacity: [0.2, 0.35, 0.2] }}
                 transition={{
-                  duration: 2.4,
+                  duration: 5.5,
                   repeat: Infinity,
-                  ease: EASE_OUT,
+                  ease: "easeInOut",
                 }}
               />
             )}
@@ -90,8 +91,7 @@ export function Hero() {
           </motion.div>
 
           <motion.h1
-            {...reveal}
-            transition={{ ...transition.slow, delay: 0.14 }}
+            {...stage(18, 0.1)}
             className="mb-4 px-2 text-3xl font-bold sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
           >
             {t("hero.title")}{" "}
@@ -101,24 +101,22 @@ export function Hero() {
           </motion.h1>
 
           <motion.p
-            {...reveal}
-            transition={{ ...transition.slow, delay: 0.24 }}
+            {...stage(10, 0.17)}
             className="mx-auto mb-6 max-w-2xl px-4 text-base text-muted-foreground sm:mb-8 sm:px-0 sm:text-lg md:text-xl"
           >
             {t("hero.description")}
           </motion.p>
 
           <motion.div
-            {...reveal}
-            transition={{ ...transition.slow, delay: 0.34 }}
+            {...stage(10, 0.24)}
             className="mb-8 flex flex-col justify-center gap-3 px-4 sm:mb-12 sm:flex-row sm:gap-4 sm:px-0"
           >
-            <Magnetic className="w-full sm:w-auto">
+            <Magnetic className="w-full sm:w-auto" strength={0.18}>
               <Button size="lg" onClick={scrollToProjects} className="w-full sm:w-auto">
                 {t("hero.primaryButton")}
               </Button>
             </Magnetic>
-            <Magnetic className="w-full sm:w-auto">
+            <Magnetic className="w-full sm:w-auto" strength={0.18}>
               <Button
                 size="lg"
                 variant="outline"
@@ -132,7 +130,7 @@ export function Hero() {
               size="lg"
               variant="outline"
               onClick={handleViewResume}
-              className="w-full transition-all duration-300 hover:bg-primary hover:text-primary-foreground sm:w-auto"
+              className="w-full transition-colors duration-200 hover:bg-primary hover:text-primary-foreground sm:w-auto"
             >
               <FileText className="mr-2 h-4 w-4" />
               {t("hero.viewResume")}
@@ -140,21 +138,17 @@ export function Hero() {
           </motion.div>
 
           <motion.div
-            {...reveal}
-            transition={{ ...transition.slow, delay: 0.44 }}
+            {...stage(8, 0.28)}
             className="flex flex-wrap justify-center gap-4 px-4 sm:gap-6 sm:px-0"
           >
-            {[t("hero.feature1"), t("hero.feature2")].map((feature, index) => (
-              <motion.div
+            {[t("hero.feature1"), t("hero.feature2")].map((feature) => (
+              <div
                 key={feature}
-                initial={prefersReduced ? false : { opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ ...transition.base, delay: 0.5 + index * 0.08 }}
                 className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm"
               >
                 <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
                 <span className="whitespace-nowrap">{feature}</span>
-              </motion.div>
+              </div>
             ))}
           </motion.div>
         </div>
@@ -162,11 +156,11 @@ export function Hero() {
 
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
         <motion.div
-          className="ambient-blob absolute -right-40 -top-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl"
+          className="ambient-blob absolute -right-40 -top-40 h-80 w-80 rounded-full bg-primary/[0.07] blur-3xl"
           style={canParallax ? { x: blobOneX, y: blobOneY } : undefined}
         />
         <motion.div
-          className="ambient-blob-delayed absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/10 blur-3xl"
+          className="ambient-blob-delayed absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/[0.07] blur-3xl"
           style={canParallax ? { x: blobTwoX, y: blobTwoY } : undefined}
         />
       </div>

@@ -80,13 +80,13 @@ export function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -24, opacity: 0 }}
+      initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={transition.slow}
+      transition={transition.reveal}
       className={cn(
         "fixed left-0 right-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter,padding] duration-300",
         isScrolled || isMobileMenuOpen
-          ? "bg-background/95 shadow-md backdrop-blur-md"
+          ? "bg-background/95 shadow-sm backdrop-blur-md"
           : "bg-transparent"
       )}
     >
@@ -97,18 +97,16 @@ export function Navbar() {
         )}
       >
         <div className="flex items-center justify-between">
-          <motion.a
+          <a
             href="#"
             onClick={(e) => {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: "smooth" })
             }}
-            className="text-xl font-bold text-primary sm:text-2xl"
-            whileHover={{ y: -1 }}
-            transition={transition.fast}
+            className="text-xl font-bold text-primary transition-opacity duration-200 hover:opacity-90 sm:text-2xl"
           >
             {Constants.PERSONAL.name}
-          </motion.a>
+          </a>
 
           <div className="hidden items-center gap-3 lg:flex xl:gap-4">
             <div ref={navLinksRef} className="relative flex items-center gap-3 xl:gap-4">
@@ -184,7 +182,7 @@ export function Navbar() {
               {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </Button>
 
-            <Magnetic>
+            <Magnetic strength={0.16}>
               <Button
                 onClick={() => scrollToSection("#contact")}
                 size="sm"

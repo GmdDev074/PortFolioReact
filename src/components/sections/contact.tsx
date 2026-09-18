@@ -1,7 +1,7 @@
 import { Mail, Phone, MapPin } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FadeIn, RevealHeading, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
+import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
 import { useLanguage } from "@/contexts/language-context"
 
 export function Contact() {
@@ -31,32 +31,31 @@ export function Contact() {
   return (
     <section id="contact" data-snap className="bg-background py-5 sm:py-6 md:py-10">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="mb-8 text-center sm:mb-12">
-          <FadeIn y={16}>
-            <p className="mb-2 text-sm font-medium text-primary sm:text-base">
-              {t("contact.subtitle")}
-            </p>
-          </FadeIn>
-          <RevealHeading className="mb-3 px-4 text-2xl font-bold sm:mb-4 sm:px-0 sm:text-3xl md:text-4xl">
+        <SectionReveal className="mb-8 text-center sm:mb-12">
+          <p className="mb-2 text-sm font-medium text-primary sm:text-base">
+            {t("contact.subtitle")}
+          </p>
+          <h2 className="mb-3 px-4 text-2xl font-bold sm:mb-4 sm:px-0 sm:text-3xl md:text-4xl">
             {t("contact.title")}
-          </RevealHeading>
-          <FadeIn delay={0.08}>
-            <p className="mx-auto max-w-2xl px-4 text-sm text-muted-foreground sm:px-0 sm:text-base">
-              {t("contact.description")}
-            </p>
-          </FadeIn>
-        </div>
+          </h2>
+          <p className="mx-auto max-w-2xl px-4 text-sm text-muted-foreground sm:px-0 sm:text-base">
+            {t("contact.description")}
+          </p>
+        </SectionReveal>
 
-        <StaggerContainer className="mx-auto grid max-w-5xl auto-rows-fr grid-cols-1 gap-2.5 md:grid-cols-3">
+        <StaggerContainer
+          fast
+          className="mx-auto grid max-w-5xl auto-rows-fr grid-cols-1 gap-2.5 md:grid-cols-3"
+        >
           {contactInfo.map((info) => {
             const Icon = info.icon
             return (
-              <StaggerItem key={info.title} scale className="h-full">
+              <StaggerItem key={info.title} className="h-full">
                 <a href={info.href} className="block h-full">
-                  <Card className="group flex h-full flex-col transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md">
+                  <Card className="group flex h-full flex-col transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-primary/35 hover:shadow-md">
                     <CardHeader className="pb-1.5">
                       <div className="flex items-center gap-2.5">
-                        <div className="flex-shrink-0 rounded-md bg-primary/10 p-1.5 text-primary transition-transform duration-200 group-hover:scale-105">
+                        <div className="flex-shrink-0 rounded-md bg-primary/10 p-1.5 text-primary transition-transform duration-300 ease-out group-hover:scale-105">
                           <Icon className="h-3.5 w-3.5" />
                         </div>
                         <CardTitle className="text-sm">{info.title}</CardTitle>

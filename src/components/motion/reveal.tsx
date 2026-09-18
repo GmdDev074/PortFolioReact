@@ -23,7 +23,7 @@ export function FadeIn({
   children,
   className,
   delay = 0,
-  y = 24,
+  y = 12,
   once = true,
   ...props
 }: RevealProps) {
@@ -38,9 +38,38 @@ export function FadeIn({
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={once ? viewportOnce : { once: false, margin: "-60px 0px" }}
-      transition={{ ...transition.slow, delay }}
+      viewport={once ? viewportOnce : { once: false, margin: "-48px 0px" }}
+      transition={{ ...transition.reveal, delay }}
       {...props}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+/** Single composition reveal for a whole section block */
+export function SectionReveal({
+  children,
+  className,
+  delay = 0,
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+}) {
+  const motionEnabled = useMotionEnabled()
+
+  if (!motionEnabled) {
+    return <div className={className}>{children}</div>
+  }
+
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 14, scale: 0.985 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={viewportOnce}
+      transition={{ ...transition.reveal, delay }}
     >
       {children}
     </motion.div>
@@ -68,10 +97,10 @@ export function RevealHeading({
   return (
     <MotionTag
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={viewportOnce}
-      transition={{ ...transition.slow, delay }}
+      transition={{ ...transition.reveal, delay }}
     >
       {children}
     </MotionTag>

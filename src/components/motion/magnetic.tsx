@@ -15,7 +15,7 @@ type MagneticProps = HTMLMotionProps<"div"> & {
 export function Magnetic({
   children,
   className,
-  strength = 0.25,
+  strength = 0.18,
   ...props
 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null)
@@ -30,8 +30,8 @@ export function Magnetic({
     const rect = ref.current.getBoundingClientRect()
     const offsetX = event.clientX - rect.left - rect.width / 2
     const offsetY = event.clientY - rect.top - rect.height / 2
-    x.set(Math.max(-10, Math.min(10, offsetX * strength)))
-    y.set(Math.max(-10, Math.min(10, offsetY * strength)))
+    x.set(Math.max(-8, Math.min(8, offsetX * strength)))
+    y.set(Math.max(-8, Math.min(8, offsetY * strength)))
   }
 
   const handleLeave = () => {
