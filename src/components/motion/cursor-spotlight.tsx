@@ -3,20 +3,25 @@ import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-mot
 import { useCanHoverInteract } from "@/hooks/use-motion-prefs"
 import { useTheme } from "@/contexts/theme-context"
 
-/** Extremely soft ambient accent — barely perceptible */
+/**
+ * Soft ambient light behind the UI — never a visible cursor object.
+ * Native cursor stays fully visible.
+ */
 export function CursorSpotlight() {
   const canInteract = useCanHoverInteract()
   const { theme } = useTheme()
   const [enabled, setEnabled] = useState(false)
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-  const springX = useSpring(mouseX, { stiffness: 55, damping: 28, mass: 0.5 })
-  const springY = useSpring(mouseY, { stiffness: 55, damping: 28, mass: 0.5 })
-  const background = useMotionTemplate`radial-gradient(640px circle at ${springX}px ${springY}px, hsl(var(--primary) / 0.035), transparent 60%)`
+  const mouseX = useMotionValue(-400)
+  const mouseY = useMotionValue(-400)
+  const springX = useSpring(mouseX, { stiffness: 45, damping: 28, mass: 0.55 })
+  const springY = useSpring(mouseY, { stiffness: 45, damping: 28, mass: 0.55 })
+
+  const intensity = theme === "dark" ? 0.045 : 0.028
+  const background = useMotionTemplate`radial-gradient(720px circle at ${springX}px ${springY}px, hsl(221 83% 53% / ${intensity}), transparent 62%)`
 
   useEffect(() => {
-    setEnabled(canInteract && theme === "dark")
-  }, [canInteract, theme])
+    setEnabled(canInteract)
+  }, [canInteract])
 
   useEffect(() => {
     if (!enabled) return

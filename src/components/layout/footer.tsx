@@ -15,7 +15,7 @@ const iconMap = {
 export function Footer() {
   const { t } = useLanguage()
   return (
-    <footer className="bg-slate-900 py-12 text-slate-50 sm:py-16">
+    <footer className="bg-slate-900 py-12 text-slate-50 sm:py-16 lg:pb-16 pb-28">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="mb-6 grid grid-cols-1 gap-6 sm:mb-8 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
           <FadeIn>

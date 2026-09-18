@@ -1,23 +1,104 @@
-import { useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
-import { Menu, X, Sun, Moon, Globe } from "lucide-react"
+import { useState, useEffect, useRef, type MouseEvent as ReactMouseEvent, type ReactNode } from "react"
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useSpring,
+  AnimatePresence,
+} from "framer-motion"
+import { Sun, Moon, Globe, ArrowRight } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/magnetic"
 import { useTheme } from "@/contexts/theme-context"
-import { useLanguage, languages, type Language } from "@/contexts/language-context"
+import { useLanguage, languages } from "@/contexts/language-context"
+import { useCanHoverInteract, useMotionEnabled } from "@/hooks/use-motion-prefs"
 import { transition } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
+function GlassIconButton({
+  onClick,
+  label,
+  children,
+}: {
+  onClick: () => void
+  label: string
+  children: ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={cn(
+        "group inline-flex h-9 w-9 items-center justify-center rounded-full",
+        "border border-white/10 bg-white/[0.04] text-foreground",
+        "transition-[transform,background-color,border-color] duration-200 ease-out",
+        "hover:-translate-y-0.5 hover:scale-[1.03] hover:border-primary/30 hover:bg-white/[0.08]",
+        "dark:border-white/10 dark:bg-white/[0.05]"
+      )}
+    >
+      <span className="transition-transform duration-200 group-hover:-translate-y-px">
+        {children}
+      </span>
+    </button>
+  )
+}
+
+/** Circular orbital highlight traveling around the pill perimeter */
+function OrbitalStroke({
+  subtle = false,
+  gradientId,
+}: {
+  subtle?: boolean
+  gradientId: string
+}) {
+  return (
+    <div className="glass-nav-border-orbit" aria-hidden>
+      <svg className="glass-nav-orbit-svg" viewBox="0 0 100 40" preserveAspectRatio="none">
+        <defs>
+          <radialGradient id={gradientId} cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="hsl(210 100% 98% / 1)" />
+            <stop offset="45%" stopColor="hsl(210 100% 90% / 0.85)" />
+            <stop offset="100%" stopColor="hsl(221 83% 65% / 0)" />
+          </radialGradient>
+        </defs>
+        {/* Circular bead orbiting the stadium path — no extra static track (avoids nested pill look) */}
+        <rect
+          className={cn("glass-nav-orbit-path", subtle && "opacity-55")}
+          x="0.75"
+          y="0.75"
+          width="98.5"
+          height="38.5"
+          rx="19.25"
+          ry="19.25"
+          pathLength={100}
+          vectorEffect="non-scaling-stroke"
+          style={{ stroke: `url(#${gradientId})` }}
+        />
+      </svg>
+    </div>
+  )
+}
+
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState("")
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const { theme, toggleTheme } = useTheme()
   const { language, setLanguage, t } = useLanguage()
   const [showLangMenu, setShowLangMenu] = useState(false)
-  const navLinksRef = useRef<HTMLDivElement>(null)
-  const [indicator, setIndicator] = useState({ left: 0, width: 0, ready: false })
+  const canGlassInteract = useCanHoverInteract()
+  const motionEnabled = useMotionEnabled()
+
+  const glassRef = useRef<HTMLDivElement>(null)
+  const pointerX = useMotionValue(0.5)
+  const pointerY = useMotionValue(0.5)
+  const springX = useSpring(pointerX, { stiffness: 70, damping: 24, mass: 0.35 })
+  const springY = useSpring(pointerY, { stiffness: 70, damping: 24, mass: 0.35 })
+
+  const reflection = useMotionTemplate`radial-gradient(220px circle at calc(${springX} * 100%) calc(${springY} * 100%), hsl(210 100% 95% / 0.16), hsl(221 83% 70% / 0.06) 35%, transparent 68%)`
+  const borderHighlight = useMotionTemplate`radial-gradient(130px circle at calc(${springX} * 100%) calc(${springY} * 100%), hsl(210 100% 92% / 0.5), hsl(221 83% 65% / 0.14) 40%, transparent 72%)`
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,7 +109,7 @@ export function Navbar() {
         const element = document.getElementById(section)
         if (element) {
           const rect = element.getBoundingClientRect()
-          return rect.top <= 100 && rect.bottom >= 100
+          return rect.top <= 120 && rect.bottom >= 120
         }
         return false
       })
@@ -41,34 +122,6 @@ export function Navbar() {
   }, [])
 
   useEffect(() => {
-    const container = navLinksRef.current
-    if (!container) return
-
-    const activeLink = container.querySelector<HTMLElement>(
-      `[data-nav-href="${activeSection}"]`
-    )
-
-    if (!activeLink) {
-      setIndicator((prev) => ({ ...prev, width: 0, ready: false }))
-      return
-    }
-
-    setIndicator({
-      left: activeLink.offsetLeft,
-      width: activeLink.offsetWidth,
-      ready: true,
-    })
-  }, [activeSection, language, isScrolled])
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-    setIsMobileMenuOpen(false)
-  }
-
-  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (showLangMenu && !(event.target as Element).closest(".language-menu-container")) {
         setShowLangMenu(false)
@@ -78,240 +131,279 @@ export function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [showLangMenu])
 
-  return (
-    <motion.nav
-      initial={{ y: -12, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={transition.reveal}
-      className={cn(
-        "fixed left-0 right-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter,padding] duration-300",
-        isScrolled || isMobileMenuOpen
-          ? "bg-background/95 shadow-sm backdrop-blur-md"
-          : "bg-transparent"
-      )}
-    >
-      <div
-        className={cn(
-          "container mx-auto px-4 sm:px-6 transition-[padding] duration-300",
-          isScrolled ? "py-2.5 sm:py-3" : "py-3 sm:py-4"
-        )}
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href)
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  const handleGlassMove = (event: ReactMouseEvent<HTMLDivElement>) => {
+    if (!canGlassInteract || !glassRef.current) return
+    const rect = glassRef.current.getBoundingClientRect()
+    pointerX.set((event.clientX - rect.left) / rect.width)
+    pointerY.set((event.clientY - rect.top) / rect.height)
+  }
+
+  const handleGlassLeave = () => {
+    pointerX.set(0.5)
+    pointerY.set(0.5)
+  }
+
+  const pillHref = hoveredLink ?? activeSection
+
+  const languageMenu = (
+    <div className="relative language-menu-container">
+      <GlassIconButton
+        label="Change language"
+        onClick={() => setShowLangMenu(!showLangMenu)}
       >
-        <div className="flex items-center justify-between">
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              window.scrollTo({ top: 0, behavior: "smooth" })
-            }}
-            className="text-xl font-bold text-primary transition-opacity duration-200 hover:opacity-90 sm:text-2xl"
+        <Globe className="h-4 w-4" />
+      </GlassIconButton>
+      <AnimatePresence>
+        {showLangMenu && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={transition.fast}
+            className={cn(
+              "absolute right-0 top-full z-50 mt-2 max-h-[450px] min-w-[200px] overflow-y-auto rounded-2xl border p-1 shadow-lg",
+              "border-border/60 bg-background/95 backdrop-blur-xl",
+              "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded [&::-webkit-scrollbar-thumb]:bg-muted [scrollbar-width:thin]"
+            )}
           >
-            {Constants.PERSONAL.name}
-          </a>
-
-          <div className="hidden items-center gap-3 lg:flex xl:gap-4">
-            <div ref={navLinksRef} className="relative flex items-center gap-3 xl:gap-4">
-              {Constants.NAV_LINKS.map((link) => (
-                <a
-                  key={link.href}
-                  data-nav-href={link.href}
-                  href={link.href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    scrollToSection(link.href)
-                  }}
-                  className={cn(
-                    "relative whitespace-nowrap py-1 text-xs font-medium transition-colors duration-200 hover:text-primary xl:text-sm",
-                    activeSection === link.href ? "text-primary" : "text-foreground"
-                  )}
-                >
-                  {t(`nav.${link.name.toLowerCase()}`) || link.name}
-                </a>
-              ))}
-              <motion.span
-                aria-hidden
-                className="pointer-events-none absolute -bottom-0.5 h-0.5 rounded-full bg-primary"
-                animate={{
-                  left: indicator.left,
-                  width: indicator.width,
-                  opacity: indicator.ready ? 1 : 0,
-                }}
-                transition={transition.base}
-              />
-            </div>
-
-            <div className="relative language-menu-container">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowLangMenu(!showLangMenu)}
-                className="hover:bg-accent"
-              >
-                <Globe className="h-5 w-5" />
-              </Button>
-              {showLangMenu && (
-                <div className="absolute right-0 top-full z-50 mt-2 max-h-[450px] min-w-[200px] overflow-y-auto rounded-lg border bg-background p-1 shadow-lg [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded [&::-webkit-scrollbar-thumb]:bg-muted [scrollbar-width:thin]">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setLanguage(lang.code)
-                        setShowLangMenu(false)
-                      }}
-                      className={cn(
-                        "flex w-full items-center gap-3 rounded px-3 py-2 text-left transition-colors hover:bg-accent",
-                        language === lang.code && "bg-accent/50 font-medium text-primary"
-                      )}
-                    >
-                      <span className="text-xl">{lang.flag}</span>
-                      <span className="flex-1">{lang.nativeName}</span>
-                      <span className="hidden text-xs text-muted-foreground sm:inline">
-                        {lang.name}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="hover:bg-accent"
-            >
-              {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </Button>
-
-            <Magnetic strength={0.16}>
-              <Button
-                onClick={() => scrollToSection("#contact")}
-                size="sm"
-                className="px-3 text-xs xl:px-4 xl:text-sm"
-              >
-                {t("hero.secondaryButton")}
-              </Button>
-            </Magnetic>
-          </div>
-
-          <div className="hidden items-center gap-2 md:flex lg:hidden">
-            <div className="relative language-menu-container">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowLangMenu(!showLangMenu)}
-                className="h-8 w-8 hover:bg-accent"
-              >
-                <Globe className="h-4 w-4" />
-              </Button>
-              {showLangMenu && (
-                <div className="absolute right-0 top-full z-50 mt-2 max-h-[400px] min-w-[180px] overflow-y-auto rounded-lg border bg-background p-1 shadow-lg">
-                  {languages.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => {
-                        setLanguage(lang.code)
-                        setShowLangMenu(false)
-                      }}
-                      className={cn(
-                        "flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm transition-colors hover:bg-accent",
-                        language === lang.code && "bg-accent/50 font-medium text-primary"
-                      )}
-                    >
-                      <span className="text-lg">{lang.flag}</span>
-                      <span className="flex-1">{lang.nativeName}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="h-8 w-8 hover:bg-accent"
-            >
-              {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-            </Button>
-            <button
-              className="text-foreground"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-
-          <button
-            className="text-foreground md:hidden"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        <motion.div
-          initial={false}
-          animate={{
-            height: isMobileMenuOpen ? "auto" : 0,
-            opacity: isMobileMenuOpen ? 1 : 0,
-          }}
-          transition={transition.base}
-          className="overflow-hidden bg-background/95 backdrop-blur-md lg:hidden"
-        >
-          <div className="flex flex-col gap-4 border-t border-border/40 py-6">
-            {Constants.NAV_LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection(link.href)
+            {languages.map((lang) => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  setLanguage(lang.code)
+                  setShowLangMenu(false)
                 }}
                 className={cn(
-                  "px-2 py-2 text-base font-medium transition-colors hover:text-primary",
-                  activeSection === link.href
-                    ? "font-semibold text-primary"
-                    : "text-foreground"
+                  "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-accent",
+                  language === lang.code && "bg-accent/50 font-medium text-primary"
                 )}
               >
-                {t(`nav.${link.name.toLowerCase()}`) || link.name}
-              </a>
+                <span className="text-xl">{lang.flag}</span>
+                <span className="flex-1">{lang.nativeName}</span>
+                <span className="hidden text-xs text-muted-foreground sm:inline">
+                  {lang.name}
+                </span>
+              </button>
             ))}
-            <div className="flex items-center gap-3 border-t border-border/40 pt-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleTheme}
-                className="h-9 w-9 p-0 hover:bg-accent"
-                aria-label="Toggle theme"
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+
+  const renderNavLinks = (opts?: { compact?: boolean; bottom?: boolean }) => (
+    <div
+      className={cn(
+        "relative z-10 flex items-center",
+        opts?.bottom
+          ? "w-full justify-between gap-1 px-1"
+          : "gap-1 rounded-full border border-white/5 bg-black/[0.08] p-1 dark:bg-black/25"
+      )}
+    >
+      {Constants.NAV_LINKS.map((link) => {
+        const isActive = activeSection === link.href
+        const isHot = pillHref === link.href
+        const label = t(`nav.${link.name.toLowerCase()}`) || link.name
+        return (
+          <a
+            key={link.href}
+            href={link.href}
+            onClick={(e) => {
+              e.preventDefault()
+              scrollToSection(link.href)
+            }}
+            onMouseEnter={() => !opts?.bottom && setHoveredLink(link.href)}
+            onMouseLeave={() => !opts?.bottom && setHoveredLink(null)}
+            className={cn(
+              "relative z-10 rounded-full font-medium transition-colors duration-200",
+              opts?.bottom
+                ? "flex-1 px-2 py-2.5 text-center text-[11px] sm:text-xs"
+                : "px-3 py-1.5 text-xs xl:px-3.5 xl:text-sm",
+              isActive || hoveredLink === link.href
+                ? "text-foreground"
+                : "text-muted-foreground hover:text-foreground"
+            )}
+          >
+            {isHot && (
+              <motion.span
+                layoutId={opts?.bottom ? "nav-bottom-pill" : "nav-glass-pill"}
+                className={cn(
+                  "absolute inset-0 -z-10 rounded-full",
+                  "bg-white/10 shadow-[0_0_0_1px_hsl(221_83%_70%/0.18),0_0_18px_-6px_hsl(221_83%_60%/0.4)] dark:bg-white/[0.08]"
+                )}
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+              />
+            )}
+            <span className="relative">
+              {label}
+              {isActive && (
+                <span className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_8px_hsl(221_83%_53%/0.75)]" />
+              )}
+            </span>
+          </a>
+        )
+      })}
+    </div>
+  )
+
+  return (
+    <>
+      <motion.nav
+        initial={motionEnabled ? { y: -12, opacity: 0 } : false}
+        animate={{ y: 0, opacity: 1 }}
+        transition={transition.reveal}
+        className="fixed left-0 right-0 top-0 z-50"
+      >
+        {/* Desktop glass pill */}
+        <div
+          className={cn(
+            "container mx-auto hidden px-4 sm:px-6 lg:block",
+            isScrolled ? "pt-2.5" : "pt-3.5"
+          )}
+        >
+          <div
+            ref={glassRef}
+            onMouseMove={handleGlassMove}
+            onMouseLeave={handleGlassLeave}
+            className="glass-nav-shell relative mx-auto flex max-w-5xl items-center justify-between gap-3 overflow-hidden rounded-full px-3 py-2 xl:gap-4 xl:px-4"
+          >
+            {canGlassInteract && (
+              <motion.div
+                aria-hidden
+                className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-full"
+                style={{ background: reflection }}
+              />
+            )}
+
+            {motionEnabled && <OrbitalStroke gradientId="glass-orbit-desktop" />}
+
+            {canGlassInteract && (
+              <motion.div
+                aria-hidden
+                className="glass-nav-border-pointer"
+                style={{ background: borderHighlight }}
+              />
+            )}
+
+            <Magnetic strength={0.22} maxOffset={7} className="relative z-10 shrink-0">
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }}
+                className={cn(
+                  "group inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold tracking-tight xl:text-base",
+                  "border border-white/10 bg-white/[0.06] dark:bg-white/[0.07]",
+                  "transition-[transform,color,background-color,border-color,box-shadow] duration-200 ease-out",
+                  "hover:border-transparent hover:bg-primary hover:text-primary-foreground",
+                  "hover:shadow-[0_0_24px_-8px_hsl(221_83%_53%/0.85)]",
+                  "active:scale-[0.98]"
+                )}
               >
-                {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-              </Button>
-              <div className="relative flex-1">
-                <select
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value as Language)}
-                  className="w-full appearance-none rounded-lg border border-input bg-background px-3 py-2 pr-8 text-sm text-foreground transition-[border-color,box-shadow] focus:outline-none focus:ring-2 focus:ring-ring"
+                <span className="transition-colors duration-200 group-hover:text-primary-foreground">
+                  {Constants.PERSONAL.name.split(" ")[0]}
+                </span>
+                <span className="text-primary/80 transition-colors duration-200 group-hover:text-primary-foreground">
+                  {Constants.PERSONAL.name.split(" ").slice(1).join(" ")}
+                </span>
+              </a>
+            </Magnetic>
+
+            {renderNavLinks()}
+
+            <div className="relative z-10 flex items-center gap-2">
+              <div className="mx-0.5 hidden h-5 w-px bg-border/60 xl:block" />
+              {languageMenu}
+              <GlassIconButton label="Toggle theme" onClick={toggleTheme}>
+                {theme === "light" ? (
+                  <Moon className="h-4 w-4" />
+                ) : (
+                  <Sun className="h-4 w-4" />
+                )}
+              </GlassIconButton>
+
+              <Magnetic strength={0.22} maxOffset={7} className="ml-1">
+                <Button
+                  onClick={() => scrollToSection("#contact")}
+                  size="sm"
+                  className="group gap-1.5 px-3.5 text-xs shadow-[0_0_24px_-8px_hsl(221_83%_53%/0.8)] xl:text-sm"
                 >
-                  {languages.map((lang) => (
-                    <option key={lang.code} value={lang.code}>
-                      {lang.flag} {lang.nativeName}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  {t("hero.secondaryButton")}
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+                </Button>
+              </Magnetic>
             </div>
-            <Button
-              onClick={() => scrollToSection("#contact")}
-              className="mt-2 w-full"
-              size="lg"
-            >
-              {t("hero.secondaryButton")}
-            </Button>
           </div>
-        </motion.div>
-      </div>
-    </motion.nav>
+        </div>
+
+        {/* Mobile / tablet top: brand + utilities only (no drawer) */}
+        <div
+          className={cn(
+            "lg:hidden transition-[background-color,backdrop-filter,box-shadow] duration-300",
+            isScrolled
+              ? "bg-background/90 shadow-sm backdrop-blur-md"
+              : "bg-transparent"
+          )}
+        >
+          <div
+            className={cn(
+              "container mx-auto flex items-center justify-between px-4 sm:px-6",
+              isScrolled ? "py-2.5" : "py-3"
+            )}
+          >
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault()
+                window.scrollTo({ top: 0, behavior: "smooth" })
+              }}
+              className={cn(
+                "group inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.06]",
+                "px-3 py-1.5 text-sm font-semibold tracking-tight dark:bg-white/[0.07]",
+                "transition-colors duration-200 active:scale-[0.98]",
+                "hover:border-primary/40 hover:bg-primary hover:text-primary-foreground"
+              )}
+            >
+              <span className="transition-colors group-hover:text-primary-foreground">
+                {Constants.PERSONAL.name.split(" ")[0]}
+              </span>
+              <span className="text-primary/80 transition-colors group-hover:text-primary-foreground/90">
+                {Constants.PERSONAL.name.split(" ").slice(1).join(" ")}
+              </span>
+            </a>
+
+            <div className="flex items-center gap-2">
+              {languageMenu}
+              <GlassIconButton label="Toggle theme" onClick={toggleTheme}>
+                {theme === "light" ? (
+                  <Moon className="h-4 w-4" />
+                ) : (
+                  <Sun className="h-4 w-4" />
+                )}
+              </GlassIconButton>
+            </div>
+          </div>
+        </div>
+      </motion.nav>
+
+      {/* Mobile / tablet bottom nav — no drawer */}
+      <nav
+        aria-label="Mobile sections"
+        className="fixed inset-x-0 bottom-0 z-50 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-2 lg:hidden"
+      >
+        <div className="glass-bottom-nav relative mx-auto max-w-md overflow-hidden rounded-full px-2 py-1">
+          {motionEnabled && <OrbitalStroke subtle gradientId="glass-orbit-mobile" />}
+          {renderNavLinks({ bottom: true })}
+        </div>
+      </nav>
+    </>
   )
 }
