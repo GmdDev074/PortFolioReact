@@ -4,14 +4,12 @@ import {
   useMotionTemplate,
   useMotionValue,
   useSpring,
-  AnimatePresence,
 } from "framer-motion"
-import { Sun, Moon, Globe, ArrowRight } from "lucide-react"
+import { Sun, Moon, ArrowRight } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/magnetic"
 import { useTheme } from "@/contexts/theme-context"
-import { useLanguage, languages } from "@/contexts/language-context"
 import { useCanHoverInteract, useMotionEnabled } from "@/hooks/use-motion-prefs"
 import { transition } from "@/lib/motion"
 import { cn } from "@/lib/utils"
@@ -86,8 +84,6 @@ export function Navbar() {
   const [activeSection, setActiveSection] = useState("")
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const { theme, toggleTheme } = useTheme()
-  const { language, setLanguage, t } = useLanguage()
-  const [showLangMenu, setShowLangMenu] = useState(false)
   const canGlassInteract = useCanHoverInteract()
   const motionEnabled = useMotionEnabled()
 
@@ -121,16 +117,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (showLangMenu && !(event.target as Element).closest(".language-menu-container")) {
-        setShowLangMenu(false)
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [showLangMenu])
-
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href)
     if (element) {
@@ -152,52 +138,6 @@ export function Navbar() {
 
   const pillHref = hoveredLink ?? activeSection
 
-  const languageMenu = (
-    <div className="relative language-menu-container">
-      <GlassIconButton
-        label="Change language"
-        onClick={() => setShowLangMenu(!showLangMenu)}
-      >
-        <Globe className="h-4 w-4" />
-      </GlassIconButton>
-      <AnimatePresence>
-        {showLangMenu && (
-          <motion.div
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={transition.fast}
-            className={cn(
-              "absolute right-0 top-full z-50 mt-2 max-h-[450px] min-w-[200px] overflow-y-auto rounded-2xl border p-1 shadow-lg",
-              "border-border/60 bg-background/95 backdrop-blur-xl",
-              "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar]:rounded [&::-webkit-scrollbar-thumb]:bg-muted [scrollbar-width:thin]"
-            )}
-          >
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => {
-                  setLanguage(lang.code)
-                  setShowLangMenu(false)
-                }}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-accent",
-                  language === lang.code && "bg-accent/50 font-medium text-primary"
-                )}
-              >
-                <span className="text-xl">{lang.flag}</span>
-                <span className="flex-1">{lang.nativeName}</span>
-                <span className="hidden text-xs text-muted-foreground sm:inline">
-                  {lang.name}
-                </span>
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-
   const renderNavLinks = (opts?: { compact?: boolean; bottom?: boolean }) => (
     <div
       className={cn(
@@ -210,7 +150,6 @@ export function Navbar() {
       {Constants.NAV_LINKS.map((link) => {
         const isActive = activeSection === link.href
         const isHot = pillHref === link.href
-        const label = t(`nav.${link.name.toLowerCase()}`) || link.name
         return (
           <a
             key={link.href}
@@ -242,7 +181,7 @@ export function Navbar() {
               />
             )}
             <span className="relative">
-              {label}
+              {link.name}
               {isActive && (
                 <span className="absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_8px_hsl(221_83%_53%/0.75)]" />
               )}
@@ -321,7 +260,6 @@ export function Navbar() {
 
             <div className="relative z-10 flex items-center gap-2">
               <div className="mx-0.5 hidden h-5 w-px bg-border/60 xl:block" />
-              {languageMenu}
               <GlassIconButton label="Toggle theme" onClick={toggleTheme}>
                 {theme === "light" ? (
                   <Moon className="h-4 w-4" />
@@ -336,7 +274,7 @@ export function Navbar() {
                   size="sm"
                   className="group gap-1.5 px-3.5 text-xs shadow-[0_0_24px_-8px_hsl(221_83%_53%/0.8)] xl:text-sm"
                 >
-                  {t("hero.secondaryButton")}
+                  {Constants.HERO.secondaryButton}
                   <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
                 </Button>
               </Magnetic>
@@ -381,7 +319,6 @@ export function Navbar() {
             </a>
 
             <div className="flex items-center gap-2">
-              {languageMenu}
               <GlassIconButton label="Toggle theme" onClick={toggleTheme}>
                 {theme === "light" ? (
                   <Moon className="h-4 w-4" />

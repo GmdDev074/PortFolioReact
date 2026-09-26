@@ -2,27 +2,24 @@ import { Mail, Phone, MapPin } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
-import { useLanguage } from "@/contexts/language-context"
 
 export function Contact() {
-  const { t } = useLanguage()
-
   const contactInfo = [
     {
       icon: Mail,
-      title: t("contact.info.email"),
+      title: "Email",
       value: Constants.PERSONAL.email,
       href: `mailto:${Constants.PERSONAL.email}`,
     },
     {
       icon: Phone,
-      title: t("contact.info.phone"),
+      title: "Phone",
       value: Constants.PERSONAL.phone,
       href: `tel:${Constants.PERSONAL.phoneRaw}`,
     },
     {
       icon: MapPin,
-      title: t("contact.info.location"),
+      title: "Location",
       value: Constants.PERSONAL.location,
       href: "#",
     },
@@ -33,13 +30,13 @@ export function Contact() {
       <div className="container mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-8 text-center sm:mb-12">
           <p className="mb-2 text-sm font-medium text-primary sm:text-base">
-            {t("contact.subtitle")}
+            {Constants.CONTACT_SECTION.subtitle}
           </p>
           <h2 className="mb-3 px-4 text-2xl font-bold sm:mb-4 sm:px-0 sm:text-3xl md:text-4xl">
-            {t("contact.title")}
+            {Constants.CONTACT_SECTION.title}
           </h2>
           <p className="mx-auto max-w-2xl px-4 text-sm text-muted-foreground sm:px-0 sm:text-base">
-            {t("contact.description")}
+            {Constants.CONTACT_SECTION.description}
           </p>
         </SectionReveal>
 

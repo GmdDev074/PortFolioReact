@@ -23,7 +23,6 @@ import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
 import { Carousel } from "@/components/ui/carousel"
-import { useLanguage } from "@/contexts/language-context"
 import { cn } from "@/lib/utils"
 
 const iconMap: Record<string, ComponentType<{ className?: string }>> = {
@@ -81,7 +80,6 @@ function ToolTile({
 }
 
 export function Skills() {
-  const { t } = useLanguage()
   const isMobile = useIsMobile()
 
   const toolTiles = Constants.TOOLS_I_USE.map((tool, index) => {
@@ -94,10 +92,10 @@ export function Skills() {
       <div className="container mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-8 text-center sm:mb-12">
           <h2 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl md:text-4xl">
-            {t("skills.title")}
+            {Constants.SKILLS_SECTION.title}
           </h2>
           <p className="mx-auto max-w-2xl px-4 text-sm text-muted-foreground sm:px-0 sm:text-base">
-            {t("skills.subtitle")}
+            {Constants.SKILLS_SECTION.subtitle}
           </p>
         </SectionReveal>
 
@@ -129,7 +127,7 @@ export function Skills() {
 
         <SectionReveal className="mb-8 overflow-visible sm:mb-10">
           <h3 className="mb-4 text-center text-lg font-bold text-black dark:text-white sm:mb-5 sm:text-xl md:text-2xl">
-            {t("skills.toolsIUse")}
+            {Constants.SKILLS_SECTION.toolsIUse}
           </h3>
 
           {isMobile ? (
@@ -156,7 +154,7 @@ export function Skills() {
 
         <SectionReveal>
           <h3 className="mb-4 text-center text-lg font-bold text-black dark:text-white sm:mb-5 sm:text-xl md:text-2xl">
-            {t("skills.daysICode")}
+            {Constants.SKILLS_SECTION.daysICode}
           </h3>
           <Card className="p-3 sm:p-4">
             <CardContent className="p-0">

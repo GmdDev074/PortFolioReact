@@ -1,7 +1,6 @@
 import { useRoute } from "wouter"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/contexts/theme-context"
-import { LanguageProvider } from "@/contexts/language-context"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { ScrollToTop } from "@/components/ui/scroll-to-top"
@@ -36,9 +35,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <LanguageProvider>
-          <AppContent />
-        </LanguageProvider>
+        <AppContent />
       </ThemeProvider>
     </QueryClientProvider>
   )

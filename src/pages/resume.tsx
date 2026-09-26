@@ -3,11 +3,9 @@ import { motion } from "framer-motion"
 import { Download, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLocation } from "wouter"
-import { useLanguage } from "@/contexts/language-context"
 
 export function Resume() {
   const [, setLocation] = useLocation()
-  const { t } = useLanguage()
   const resumePath = "/resume/Muhammad_Salman_Resume.pdf"
 
   // Scroll to top when component mounts
@@ -44,14 +42,14 @@ export function Resume() {
             className="flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <ArrowLeft className="h-4 w-4" />
-            {t("resume.backToHome")}
+            Back to Home
           </Button>
           <Button
             onClick={handleDownload}
             className="flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <Download className="h-4 w-4" />
-            {t("resume.download")}
+            Download Resume
           </Button>
         </motion.div>
 
@@ -84,11 +82,10 @@ export function Resume() {
             className="flex items-center gap-2 w-full"
           >
             <Download className="h-4 w-4" />
-            {t("resume.download")}
+            Download Resume
           </Button>
         </motion.div>
       </div>
     </div>
   )
 }
-

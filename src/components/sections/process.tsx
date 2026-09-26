@@ -3,7 +3,6 @@ import { useRef } from "react"
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { SectionReveal } from "@/components/motion/reveal"
-import { useLanguage } from "@/contexts/language-context"
 import { useIsDesktop, useMotionEnabled } from "@/hooks/use-motion-prefs"
 import { transition, viewportOnce } from "@/lib/motion"
 import { cn } from "@/lib/utils"
@@ -56,7 +55,6 @@ function ProcessCard({
 }
 
 export function Process() {
-  const { t } = useLanguage()
   const sectionRef = useRef<HTMLElement>(null)
   const railRef = useRef<HTMLDivElement>(null)
   const motionEnabled = useMotionEnabled()
@@ -77,10 +75,10 @@ export function Process() {
       <div className="container mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-8 text-center sm:mb-12">
           <h2 className="mb-3 text-2xl font-bold sm:mb-4 sm:text-3xl md:text-4xl">
-            {t("process.title")}
+            {Constants.PROCESS_SECTION.title}
           </h2>
           <p className="mx-auto max-w-2xl px-4 text-sm text-muted-foreground sm:px-0 sm:text-base">
-            {t("process.subtitle")}
+            {Constants.PROCESS_SECTION.subtitle}
           </p>
         </SectionReveal>
 
@@ -112,17 +110,13 @@ export function Process() {
 
           <div className="relative z-10 grid grid-cols-1 gap-2.5 overflow-visible pt-1 sm:grid-cols-2 lg:grid-cols-4">
             {Constants.PROCESS_STEPS.map((step, index) => {
-              const stepNum = index + 1
-              const title = t(`process.step${stepNum}.title`)
-              const description = t(`process.step${stepNum}.description`)
-
               if (!motionEnabled) {
                 return (
                   <div key={step.number} className="h-full">
                     <ProcessCard
                       stepNumber={step.number}
-                      title={title}
-                      description={description}
+                      title={step.title}
+                      description={step.description}
                     />
                   </div>
                 )
@@ -139,8 +133,8 @@ export function Process() {
                 >
                   <ProcessCard
                     stepNumber={step.number}
-                    title={title}
-                    description={description}
+                    title={step.title}
+                    description={step.description}
                   />
                 </motion.div>
               )

@@ -28,10 +28,33 @@ export const Constants = {
     description: "Crafting beautiful and functional Android applications with modern technologies. Specialized in Kotlin, Jetpack Compose, Firebase, and building scalable mobile solutions.",
     primaryButton: "View My Projects",
     secondaryButton: "Contact Me",
+    viewResume: "View Resume",
     features: [
       "3+ Years Experience",
       "20+ Published Apps"
     ]
+  },
+
+  // Skills section headings
+  SKILLS_SECTION: {
+    title: "Technologies & Tools",
+    subtitle: "Modern tools and technologies I use to build exceptional Android applications",
+    toolsIUse: "Tools I use",
+    daysICode: "Days I Code",
+  },
+
+  // About section
+  ABOUT: {
+    subtitle: "About Me",
+    title: "Why Choose Me",
+    description:
+      "I bring years of experience in Android development, delivering high-quality mobile applications that exceed expectations.",
+  },
+
+  // Process section headings
+  PROCESS_SECTION: {
+    title: "My Development Process",
+    subtitle: "A structured approach to delivering high-quality Android applications",
   },
 
   // Skills/Technologies
@@ -256,7 +279,7 @@ export const Constants = {
   NAV_LINKS: [
     { name: 'Skills', href: '#skills' },
     { name: 'Projects', href: '#projects' },
-    { name: 'WhyMe', href: '#about' },
+    { name: 'Why Me', href: '#about' },
     { name: 'Contact', href: '#contact' }
   ],
 
@@ -300,8 +323,11 @@ export const Constants = {
   // Footer
   FOOTER: {
     description: 'Passionate Android developer creating innovative mobile solutions. Let\'s build the next great app together.',
+    quickLinks: 'Quick Links',
+    connect: 'Connect',
+    allRightsReserved: 'All rights reserved.',
     links: [
-      { name: 'WhyMe', href: '#about' },
+      { name: 'Why Me', href: '#about' },
       { name: 'Projects', href: '#projects' },
       { name: 'Contact', href: '#contact' }
     ],

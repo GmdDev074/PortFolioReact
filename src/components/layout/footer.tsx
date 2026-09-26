@@ -2,7 +2,6 @@ import { motion } from "framer-motion"
 import { Github, Linkedin, Twitter, Play } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { FadeIn } from "@/components/motion/reveal"
-import { useLanguage } from "@/contexts/language-context"
 import { transition } from "@/lib/motion"
 
 const iconMap = {
@@ -13,7 +12,6 @@ const iconMap = {
 }
 
 export function Footer() {
-  const { t } = useLanguage()
   return (
     <footer className="relative overflow-hidden bg-slate-950 py-12 text-slate-50 sm:py-16 lg:pb-16 pb-28">
       <div
@@ -26,33 +24,32 @@ export function Footer() {
             <h3 className="mb-3 text-xl font-bold sm:mb-4 sm:text-2xl">
               {Constants.PERSONAL.name}
             </h3>
-            <p className="text-sm text-slate-400 sm:text-base">{t("footer.description")}</p>
+            <p className="text-sm text-slate-400 sm:text-base">
+              {Constants.FOOTER.description}
+            </p>
           </FadeIn>
 
           <FadeIn>
             <h4 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
-              {t("footer.quickLinks")}
+              {Constants.FOOTER.quickLinks}
             </h4>
             <ul className="flex flex-col gap-2">
-              {Constants.FOOTER.links.map((link) => {
-                const linkKey = link.name.toLowerCase()
-                return (
-                  <li key={link.href}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-slate-400 transition-colors duration-200 hover:text-primary sm:text-base"
-                    >
-                      {t(`footer.links.${linkKey}`)}
-                    </a>
-                  </li>
-                )
-              })}
+              {Constants.FOOTER.links.map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-slate-400 transition-colors duration-200 hover:text-primary sm:text-base"
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
             </ul>
           </FadeIn>
 
           <FadeIn>
             <h4 className="mb-3 text-base font-semibold sm:mb-4 sm:text-lg">
-              {t("footer.connect")}
+              {Constants.FOOTER.connect}
             </h4>
             <div className="flex items-center gap-3 sm:gap-4">
               {Constants.FOOTER.social.map((social) => {
@@ -80,7 +77,7 @@ export function Footer() {
         <FadeIn className="border-t border-slate-800 pt-6 text-center text-slate-400 sm:pt-8">
           <p className="text-xs sm:text-sm">
             &copy; {new Date().getFullYear()} {Constants.PERSONAL.name}.{" "}
-            {t("footer.allRightsReserved")}
+            {Constants.FOOTER.allRightsReserved}
           </p>
         </FadeIn>
       </div>

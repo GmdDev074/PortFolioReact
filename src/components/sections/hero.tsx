@@ -9,13 +9,12 @@ import {
 import { CheckCircle2, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/magnetic"
-import { useLanguage } from "@/contexts/language-context"
+import { Constants } from "@/lib/constants"
 import { useLocation } from "wouter"
 import { useCanHoverInteract } from "@/hooks/use-motion-prefs"
 import { transition } from "@/lib/motion"
 
 export function Hero() {
-  const { t } = useLanguage()
   const [, setLocation] = useLocation()
   const prefersReduced = useReducedMotion()
   const canParallax = useCanHoverInteract()
@@ -86,7 +85,7 @@ export function Hero() {
               />
             )}
             <span className="relative inline-flex rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:px-4 sm:py-2 sm:text-sm">
-              {t("hero.badge")}
+              {Constants.HERO.badge}
             </span>
           </motion.div>
 
@@ -94,9 +93,9 @@ export function Hero() {
             {...stage(18, 0.1)}
             className="mb-4 px-2 text-3xl font-bold sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
           >
-            {t("hero.title")}{" "}
+            {Constants.HERO.title}{" "}
             <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent sm:inline">
-              {t("hero.titleHighlight")}
+              {Constants.HERO.titleHighlight}
             </span>
           </motion.h1>
 
@@ -104,7 +103,7 @@ export function Hero() {
             {...stage(10, 0.17)}
             className="mx-auto mb-6 max-w-2xl px-4 text-base text-muted-foreground sm:mb-8 sm:px-0 sm:text-lg md:text-xl"
           >
-            {t("hero.description")}
+            {Constants.HERO.description}
           </motion.p>
 
           <motion.div
@@ -113,7 +112,7 @@ export function Hero() {
           >
             <Magnetic className="w-full sm:w-auto" strength={0.18}>
               <Button size="lg" onClick={scrollToProjects} className="w-full sm:w-auto">
-                {t("hero.primaryButton")}
+                {Constants.HERO.primaryButton}
               </Button>
             </Magnetic>
             <Magnetic className="w-full sm:w-auto" strength={0.18}>
@@ -123,7 +122,7 @@ export function Hero() {
                 onClick={scrollToContact}
                 className="w-full sm:w-auto"
               >
-                {t("hero.secondaryButton")}
+                {Constants.HERO.secondaryButton}
               </Button>
             </Magnetic>
             <Button
@@ -133,7 +132,7 @@ export function Hero() {
               className="w-full transition-colors duration-200 hover:bg-primary hover:text-primary-foreground sm:w-auto"
             >
               <FileText className="mr-2 h-4 w-4" />
-              {t("hero.viewResume")}
+              {Constants.HERO.viewResume}
             </Button>
           </motion.div>
 
@@ -141,7 +140,7 @@ export function Hero() {
             {...stage(8, 0.28)}
             className="flex flex-wrap justify-center gap-4 px-4 sm:gap-6 sm:px-0"
           >
-            {[t("hero.feature1"), t("hero.feature2")].map((feature) => (
+            {Constants.HERO.features.map((feature) => (
               <div
                 key={feature}
                 className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm"

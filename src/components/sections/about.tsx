@@ -3,21 +3,8 @@ import { Card } from "@/components/ui/card"
 import { Check } from "lucide-react"
 import { AnimatedStat } from "@/components/motion/animated-stat"
 import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
-import { useLanguage } from "@/contexts/language-context"
 
 export function About() {
-  const { t } = useLanguage()
-
-  const getStatLabel = (index: number) => {
-    const labels = [
-      t("about.stats.publishedApps"),
-      t("about.stats.projectsCompleted"),
-      t("about.stats.yearsExperience"),
-      t("about.stats.averageRating"),
-    ]
-    return labels[index] || ""
-  }
-
   return (
     <section
       id="about"
@@ -29,14 +16,14 @@ export function About() {
           <SectionReveal className="order-2 lg:order-1">
             <Card className="bg-gradient-to-br from-primary/15 to-primary/5 p-4 sm:p-5">
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {Constants.STATS.map((stat, index) => (
+                {Constants.STATS.map((stat) => (
                   <div key={stat.label} className="text-center">
                     <AnimatedStat
                       value={stat.value}
                       className="mb-0.5 block text-2xl font-bold text-primary sm:text-3xl"
                     />
                     <div className="text-[11px] text-muted-foreground sm:text-xs">
-                      {getStatLabel(index)}
+                      {stat.label}
                     </div>
                   </div>
                 ))}
@@ -46,13 +33,13 @@ export function About() {
 
           <SectionReveal className="order-1 lg:order-2" delay={0.04}>
             <p className="mb-2 text-sm font-medium text-primary sm:text-base">
-              {t("about.subtitle")}
+              {Constants.ABOUT.subtitle}
             </p>
             <h2 className="mb-4 text-2xl font-bold sm:mb-6 sm:text-3xl md:text-4xl">
-              {t("about.title")}
+              {Constants.ABOUT.title}
             </h2>
             <p className="mb-6 text-sm text-muted-foreground sm:mb-8 sm:text-base">
-              {t("about.description")}
+              {Constants.ABOUT.description}
             </p>
 
             <StaggerContainer fast className="space-y-3 sm:space-y-4">
