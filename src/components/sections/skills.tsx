@@ -166,17 +166,29 @@ export function Skills() {
                   className="block"
                 >
                   <img
-                    src={`https://ghchart.rshah.org/GmdDev074`}
-                    alt="GitHub Contribution Calendar"
+                    src="https://ghchart.rshah.org/GmdDev074"
+                    alt="GitHub contribution calendar for GmdDev074"
+                    loading="lazy"
+                    decoding="async"
                     className="h-auto w-full"
+                    onError={(event) => {
+                      event.currentTarget.style.display = "none"
+                    }}
                   />
                 </a>
               </div>
               <div className="mt-3 border-t border-border pt-3">
                 <div className="flex flex-col items-center justify-between gap-2 sm:flex-row">
                   <p className="text-center text-xs text-muted-foreground sm:text-left sm:text-sm">
-                    <span className="font-semibold text-foreground">534</span> contributions
-                    in the last year
+                    Recent GitHub activity —{" "}
+                    <a
+                      href={Constants.PERSONAL.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-foreground underline-offset-2 hover:underline"
+                    >
+                      view profile
+                    </a>
                   </p>
                   <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground sm:text-xs">
                     <span>Less</span>

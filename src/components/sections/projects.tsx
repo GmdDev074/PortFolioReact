@@ -91,7 +91,7 @@ function ProjectCard({
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => setLocation(project.detailPath!)}
+              onClick={() => project.detailPath && setLocation(project.detailPath)}
               className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-[background-color,border-color] duration-300 ease-out hover:border-primary/35 hover:bg-primary/10 sm:text-xs"
             >
               Explore Project
@@ -143,8 +143,8 @@ export function Projects() {
             A Slice of Projects
           </h2>
           <p className="mx-auto max-w-2xl text-xs text-muted-foreground sm:text-sm">
-            We don't list everything — just a few live products that show the range. Apps on
-            the Play Store, platforms in production, and everything in between.
+            I don&apos;t list everything — just a curated set of live products that show the
+            range. Apps on the Play Store, platforms in production, and everything in between.
           </p>
         </SectionReveal>
 

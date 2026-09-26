@@ -24,7 +24,6 @@ export const ticketDrawsDetail: ProjectDetail = {
   links: {
     playStore:
       "https://play.google.com/store/apps/details?id=com.growmoredevs.thefreelottery",
-    appStore: "https://ticket-draws.en.softonic.com/iphone",
   },
   images: ticketDrawsImages,
   servicesSectionTitle: "Four Ways Ticket Draws Works",

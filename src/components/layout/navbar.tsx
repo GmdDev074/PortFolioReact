@@ -13,6 +13,7 @@ import { useTheme } from "@/contexts/theme-context"
 import { useCanHoverInteract, useMotionEnabled } from "@/hooks/use-motion-prefs"
 import { transition } from "@/lib/motion"
 import { cn } from "@/lib/utils"
+import { useLocation } from "wouter"
 
 function GlassIconButton({
   onClick,
@@ -86,6 +87,8 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const canGlassInteract = useCanHoverInteract()
   const motionEnabled = useMotionEnabled()
+  const [location, setLocation] = useLocation()
+  const isHome = location === "/" || location.startsWith("/#")
 
   const glassRef = useRef<HTMLDivElement>(null)
   const pointerX = useMotionValue(0.5)
@@ -99,6 +102,11 @@ export function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
+
+      if (!isHome) {
+        setActiveSection("")
+        return
+      }
 
       const sections = Constants.NAV_LINKS.map((link) => link.href.slice(1))
       const currentSection = sections.find((section) => {
@@ -115,13 +123,25 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll()
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [isHome])
 
   const scrollToSection = (href: string) => {
+    if (!isHome) {
+      setLocation(`/${href}`)
+      return
+    }
     const element = document.querySelector(href)
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
+  }
+
+  const goHome = () => {
+    if (isHome) {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+      return
+    }
+    setLocation("/")
   }
 
   const handleGlassMove = (event: ReactMouseEvent<HTMLDivElement>) => {
@@ -233,10 +253,10 @@ export function Navbar() {
 
             <Magnetic strength={0.22} maxOffset={7} className="relative z-10 shrink-0">
               <a
-                href="#"
+                href="/"
                 onClick={(e) => {
                   e.preventDefault()
-                  window.scrollTo({ top: 0, behavior: "smooth" })
+                  goHome()
                 }}
                 className={cn(
                   "group inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold tracking-tight xl:text-base",
@@ -298,10 +318,10 @@ export function Navbar() {
             )}
           >
             <a
-              href="#"
+              href="/"
               onClick={(e) => {
                 e.preventDefault()
-                window.scrollTo({ top: 0, behavior: "smooth" })
+                goHome()
               }}
               className={cn(
                 "group inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.06]",

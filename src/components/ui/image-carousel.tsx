@@ -125,6 +125,8 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
                   src={src}
                   alt={`${alt} screenshot ${i + 1}`}
                   draggable={false}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  decoding="async"
                   className="h-full w-full select-none object-contain object-center"
                 />
               </div>

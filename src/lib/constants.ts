@@ -7,6 +7,7 @@ export const Constants = {
     phoneRaw: "923082456659",
     location: "Lahore, Punjab, Pakistan",
     github: "https://github.com/GmdDev074",
+    linkedin: "https://www.linkedin.com/in/muhammad-salman-5672a0203/",
   },
 
   // Hero Section
@@ -125,7 +126,7 @@ export const Constants = {
   // Statistics
   STATS: [
     { value: '20+', label: 'Published Apps' },
-    { value: '50+', label: 'Projects Completed' },
+    { value: '5', label: 'Featured Case Studies' },
     { value: '3+', label: 'Years Experience' },
     { value: '4.8+', label: 'Average Rating' }
   ],

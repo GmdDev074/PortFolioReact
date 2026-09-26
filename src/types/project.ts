@@ -65,6 +65,7 @@ export interface ProjectListItem {
   tagline: string
   category: "mobile" | "web"
   featured?: boolean
+  coverImage?: string
   playStore?: string
   appStore?: string
   url?: string

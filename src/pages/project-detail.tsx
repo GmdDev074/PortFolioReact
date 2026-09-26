@@ -3,14 +3,21 @@ import { useLocation, useRoute } from "wouter"
 import { motion } from "framer-motion"
 import {
   ArrowLeft,
+  ArrowRight,
+  Car,
+  Gift,
   Layers,
   MapPin,
+  Package,
   Shield,
   Smartphone,
+  Sparkles,
   Workflow,
   Zap,
 } from "lucide-react"
 import { getProjectDetail } from "@/data/projectDetails"
+import { mobileProjects } from "@/data/projects"
+import { Constants } from "@/lib/constants"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ImageCarousel } from "@/components/ui/image-carousel"
@@ -22,6 +29,8 @@ const sectionFade = {
   viewport: { once: true, margin: "-40px" as const },
   transition: { duration: 0.3 },
 }
+
+const serviceIcons = [Car, MapPin, Package, Gift, Sparkles, Smartphone]
 
 function scrollToProjects() {
   const element = document.getElementById("projects")
@@ -44,6 +53,14 @@ export function ProjectDetail() {
   const [, setLocation] = useLocation()
   const project = params?.id ? getProjectDetail(params.id) : undefined
 
+  const projectIndex = mobileProjects.findIndex((p) => p.id === params?.id)
+  const prevProject =
+    projectIndex > 0 ? mobileProjects[projectIndex - 1] : undefined
+  const nextProject =
+    projectIndex >= 0 && projectIndex < mobileProjects.length - 1
+      ? mobileProjects[projectIndex + 1]
+      : undefined
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" })
   }, [params?.id])
@@ -52,6 +69,11 @@ export function ProjectDetail() {
     if (!project) {
       setLocation("/#projects")
       setTimeout(scrollToProjects, 150)
+      return
+    }
+    document.title = `${project.name} · ${Constants.PERSONAL.name}`
+    return () => {
+      document.title = `${Constants.PERSONAL.name} · Android Developer`
     }
   }, [project, setLocation])
 
@@ -65,7 +87,7 @@ export function ProjectDetail() {
   }
 
   return (
-    <div className="min-h-screen glass-section">
+    <div className="min-h-screen glass-section pb-24 pt-20 sm:pt-24 lg:pb-8">
       {/* Hero */}
       <section className="relative overflow-hidden py-5 md:py-7">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-teal-500/5" />
@@ -84,7 +106,7 @@ export function ProjectDetail() {
               <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
                 Case Study
               </p>
-              <h1 className="mb-2 text-2xl font-bold tracking-tight md:text-3xl xl:text-4xl">
+              <h1 className="mb-2 font-display text-2xl font-bold tracking-tight md:text-3xl xl:text-4xl">
                 {project.name}
               </h1>
               <p className="mb-3 text-base leading-snug text-muted-foreground md:text-lg">
@@ -148,24 +170,27 @@ export function ProjectDetail() {
           </motion.div>
 
           <div className="grid grid-cols-1 auto-rows-fr gap-2.5 sm:grid-cols-2">
-            {project.services.map((service, i) => (
-              <motion.div
-                key={service.title}
-                {...sectionFade}
-                transition={{ duration: 0.3, delay: i * 0.04 }}
-                className="h-full"
-              >
-                <Card className="flex h-full flex-col rounded-xl p-3">
-                  <div className="mb-1.5 flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
-                    <MapPin className="h-4 w-4 text-teal-600 dark:text-teal-400" />
-                  </div>
-                  <h3 className="mb-0.5 text-sm font-semibold">{service.title}</h3>
-                  <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                    {service.description}
-                  </p>
-                </Card>
-              </motion.div>
-            ))}
+            {project.services.map((service, i) => {
+              const Icon = serviceIcons[i % serviceIcons.length]
+              return (
+                <motion.div
+                  key={service.title}
+                  {...sectionFade}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}
+                  className="h-full"
+                >
+                  <Card className="flex h-full flex-col rounded-xl p-3">
+                    <div className="mb-1.5 flex h-7 w-7 items-center justify-center rounded-md bg-primary/10">
+                      <Icon className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+                    </div>
+                    <h3 className="mb-0.5 text-sm font-semibold">{service.title}</h3>
+                    <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                      {service.description}
+                    </p>
+                  </Card>
+                </motion.div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -384,41 +409,88 @@ export function ProjectDetail() {
         </div>
       </section>
 
-      {/* Key Features + Second Carousel */}
+      {/* Key Features */}
       <section className="bg-muted/15 py-5 md:py-6">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="grid items-start gap-5 lg:grid-cols-2 lg:gap-8">
-            <motion.div {...sectionFade}>
-              <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
-                Key Features
-              </p>
-              <h2 className="mb-3 text-xl font-bold tracking-tight md:text-2xl">
-                {project.featuresSectionTitle}
-              </h2>
-              <ul className="space-y-1.5">
-                {project.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-2 text-xs text-muted-foreground sm:text-sm"
-                  >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
+          <motion.div {...sectionFade} className="mx-auto max-w-3xl">
+            <p className="mb-1.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
+              Key Features
+            </p>
+            <h2 className="mb-3 text-xl font-bold tracking-tight md:text-2xl">
+              {project.featuresSectionTitle}
+            </h2>
+            <ul className="space-y-1.5">
+              {project.features.map((feature) => (
+                <li
+                  key={feature}
+                  className="flex items-start gap-2 text-xs text-muted-foreground sm:text-sm"
+                >
+                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-teal-500" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+        </div>
+      </section>
 
-            <motion.div
-              {...sectionFade}
-              transition={{ duration: 0.3, delay: 0.05 }}
-              className="mx-auto w-full max-w-[220px] sm:max-w-[260px] lg:mx-0 lg:max-w-[300px]"
-            >
-              <p className="mb-2.5 text-xs font-semibold tracking-widest text-teal-600 uppercase dark:text-teal-400">
-                App Screens
-              </p>
-              <ImageCarousel images={project.images} alt={project.name} />
-            </motion.div>
-          </div>
+      {/* Next step CTA */}
+      <section className="py-8 md:py-10">
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            {...sectionFade}
+            className="mx-auto max-w-3xl rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/10 via-background to-teal-500/5 px-5 py-8 text-center sm:px-8"
+          >
+            <h2 className="mb-2 font-display text-xl font-bold tracking-tight sm:text-2xl">
+              Building something similar?
+            </h2>
+            <p className="mx-auto mb-5 max-w-xl text-sm text-muted-foreground">
+              Tell me about your app idea — I&apos;d love to help ship a polished Android
+              experience like {project.name}.
+            </p>
+            <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button size="sm" onClick={() => setLocation("/#contact")}>
+                Discuss a Project
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setLocation("/resume")}
+              >
+                View Resume
+              </Button>
+            </div>
+          </motion.div>
+
+          {(prevProject || nextProject) && (
+            <div className="mx-auto mt-6 flex max-w-3xl items-center justify-between gap-3">
+              {prevProject ? (
+                <button
+                  type="button"
+                  onClick={() => setLocation(prevProject.detailPath!)}
+                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  {prevProject.name}
+                </button>
+              ) : (
+                <span />
+              )}
+              {nextProject ? (
+                <button
+                  type="button"
+                  onClick={() => setLocation(nextProject.detailPath!)}
+                  className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {nextProject.name}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              ) : (
+                <span />
+              )}
+            </div>
+          )}
         </div>
       </section>
     </div>

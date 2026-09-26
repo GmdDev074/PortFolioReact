@@ -7,6 +7,7 @@ export const projects: ProjectListItem[] = [
     tagline: "Premium chauffeur, valet, delivery & concierge — all in one app.",
     category: "mobile",
     featured: true,
+    coverImage: "/projects/courial/Courial04.webp",
     detailPath: "/projects/courial",
     playStore:
       "https://play.google.com/store/apps/details?id=com.courial.user&hl=en",
@@ -17,6 +18,7 @@ export const projects: ProjectListItem[] = [
     name: "Versus Sports Simulator",
     tagline: "Sports predictions & power rankings across 13 leagues.",
     category: "mobile",
+    coverImage: "/projects/versus/Versus8.webp",
     detailPath: "/projects/versus",
     playStore:
       "https://play.google.com/store/apps/details?id=com.compughter.ratings",
@@ -28,6 +30,7 @@ export const projects: ProjectListItem[] = [
     name: "Fussball Europa",
     tagline: "European football news, transfers, and rumors — fast & free.",
     category: "mobile",
+    coverImage: "/projects/fussball/Fussball01.webp",
     detailPath: "/projects/fussball",
     playStore:
       "https://play.google.com/store/apps/details?id=barca99com.androidapp",
@@ -38,16 +41,17 @@ export const projects: ProjectListItem[] = [
     name: "Ticket Draws",
     tagline: "Free sweepstakes — watch an ad, earn a ticket, win big.",
     category: "mobile",
+    coverImage: "/projects/ticketdraws/TicketDraws1.webp",
     detailPath: "/projects/ticketdraws",
     playStore:
       "https://play.google.com/store/apps/details?id=com.growmoredevs.thefreelottery",
-    appStore: "https://ticket-draws.en.softonic.com/iphone",
   },
   {
     id: "whisperr",
     name: "Whisperr",
     tagline: "Live voice translation with real-time subtitles in 100+ languages.",
     category: "mobile",
+    coverImage: "/projects/whisperr/Whisperr1.webp",
     detailPath: "/projects/whisperr",
     playStore:
       "https://play.google.com/store/apps/details?id=com.whisperr.whisperr",

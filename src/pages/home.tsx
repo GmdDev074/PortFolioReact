@@ -5,8 +5,13 @@ import { Projects } from "@/components/sections/projects"
 import { Process } from "@/components/sections/process"
 import { About } from "@/components/sections/about"
 import { Contact } from "@/components/sections/contact"
+import { Constants } from "@/lib/constants"
 
 export function Home() {
+  useEffect(() => {
+    document.title = `${Constants.PERSONAL.name} · Android Developer`
+  }, [])
+
   useEffect(() => {
     const hash = window.location.hash
     if (!hash) return
@@ -29,8 +34,8 @@ export function Home() {
   return (
     <>
       <Hero />
-      <Skills />
       <Projects />
+      <Skills />
       <Process />
       <About />
       <Contact />
