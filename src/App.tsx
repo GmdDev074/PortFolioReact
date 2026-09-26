@@ -1,14 +1,11 @@
 import { useRoute } from "wouter"
-import { QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/contexts/theme-context"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { ScrollToTop } from "@/components/ui/scroll-to-top"
-import { Toaster } from "@/components/ui/toaster"
 import { PageTransition } from "@/components/motion/page-transition"
 import { ScrollProgress } from "@/components/motion/scroll-progress"
 import { CursorSpotlight } from "@/components/motion/cursor-spotlight"
-import { queryClient } from "@/lib/queryClient"
 
 function AppContent() {
   const [isDetailPage] = useRoute("/projects/:id")
@@ -26,18 +23,15 @@ function AppContent() {
       </main>
       {!shouldHideNavbarFooter && <Footer />}
       <ScrollToTop />
-      <Toaster />
     </div>
   )
 }
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   )
 }
 

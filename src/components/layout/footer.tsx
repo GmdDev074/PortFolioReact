@@ -1,5 +1,5 @@
 import { motion } from "framer-motion"
-import { Github, Linkedin, Twitter, Play } from "lucide-react"
+import { Github, Linkedin } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { FadeIn } from "@/components/motion/reveal"
 import { transition } from "@/lib/motion"
@@ -7,8 +7,6 @@ import { transition } from "@/lib/motion"
 const iconMap = {
   Github,
   Linkedin,
-  Twitter,
-  Play,
 }
 
 export function Footer() {

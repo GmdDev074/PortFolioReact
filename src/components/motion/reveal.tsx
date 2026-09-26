@@ -2,7 +2,6 @@ import type { ReactNode } from "react"
 import { motion, type HTMLMotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 import {
-  fadeScale,
   fadeUp,
   staggerContainer,
   staggerFast,
@@ -76,37 +75,6 @@ export function SectionReveal({
   )
 }
 
-export function RevealHeading({
-  children,
-  className,
-  as: Tag = "h2",
-  delay = 0,
-}: {
-  children: ReactNode
-  className?: string
-  as?: "h1" | "h2" | "h3" | "p"
-  delay?: number
-}) {
-  const motionEnabled = useMotionEnabled()
-  const MotionTag = motion[Tag]
-
-  if (!motionEnabled) {
-    return <Tag className={className}>{children}</Tag>
-  }
-
-  return (
-    <MotionTag
-      className={className}
-      initial={{ opacity: 0, y: 14 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={viewportOnce}
-      transition={{ ...transition.reveal, delay }}
-    >
-      {children}
-    </MotionTag>
-  )
-}
-
 export function StaggerContainer({
   children,
   className,
@@ -136,9 +104,8 @@ export function StaggerContainer({
 export function StaggerItem({
   children,
   className,
-  scale = false,
   ...props
-}: RevealProps & { scale?: boolean }) {
+}: RevealProps) {
   const motionEnabled = useMotionEnabled()
 
   if (!motionEnabled) {
@@ -148,7 +115,7 @@ export function StaggerItem({
   return (
     <motion.div
       className={className}
-      variants={scale ? fadeScale : fadeUp}
+      variants={fadeUp}
       transition={transition.base}
       {...props}
     >

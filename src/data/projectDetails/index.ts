@@ -5,7 +5,7 @@ import { versusDetail } from "./versus"
 import { ticketDrawsDetail } from "./ticketdraws"
 import { whisperrDetail } from "./whisperr"
 
-export const projectDetails: Record<string, ProjectDetail> = {
+const projectDetails: Record<string, ProjectDetail> = {
   courial: courialDetail,
   fussball: fussballDetail,
   versus: versusDetail,
