@@ -1,3 +1,4 @@
+import { useRoute } from "wouter"
 import { ThemeProvider } from "@/contexts/theme-context"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
@@ -7,6 +8,10 @@ import { ScrollProgress } from "@/components/motion/scroll-progress"
 import { CursorSpotlight } from "@/components/motion/cursor-spotlight"
 
 function AppContent() {
+  const [isDetailPage] = useRoute("/projects/:id")
+  const [isResumePage] = useRoute("/resume")
+  const shouldHideNavbarFooter = isDetailPage || isResumePage
+
   return (
     <div className="relative flex min-h-screen flex-col">
       <a
@@ -17,11 +22,11 @@ function AppContent() {
       </a>
       <ScrollProgress />
       <CursorSpotlight />
-      <Navbar />
+      {!shouldHideNavbarFooter && <Navbar />}
       <main id="main-content" className="relative z-[2] flex flex-1 flex-col">
         <PageTransition />
       </main>
-      <Footer />
+      {!shouldHideNavbarFooter && <Footer />}
       <ScrollToTop />
     </div>
   )
