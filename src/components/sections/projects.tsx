@@ -59,28 +59,33 @@ function ProjectCard({
       whileInView={prefersReduced ? undefined : { opacity: 1, y: 0 }}
       viewport={viewportOnce}
       transition={transition.reveal}
-      className="h-full overflow-visible"
+      className={cn("h-full overflow-visible", featured && "relative z-[1]")}
       onHoverStart={() => canFocus && onHoverChange(project.id)}
       onHoverEnd={() => canFocus && onHoverChange(null)}
     >
       <motion.div
-        animate={{ opacity: canFocus && dimmed ? 0.7 : 1 }}
+        animate={{
+          opacity: canFocus && dimmed ? 0.58 : 1,
+          scale: featured && !(canFocus && dimmed) ? 1 : undefined,
+        }}
         transition={transition.hover}
         className="h-full"
       >
         <article
           className={cn(
             "group relative flex h-full gap-3 overflow-hidden rounded-xl p-3 glass-card glass-card-hover",
-            "transition-transform duration-300 ease-out hover:-translate-y-0.5",
-            featured &&
-              "ring-1 ring-primary/40 shadow-[0_12px_28px_-18px_hsl(221_83%_40%/0.45)]"
+            "transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-0.5",
+            featured && "project-card-featured gap-3.5 p-3.5 sm:gap-4 sm:p-4"
           )}
         >
           {/* Real screenshot — no device chrome */}
           <button
             type="button"
             onClick={openDetail}
-            className="relative w-[52px] shrink-0 self-center overflow-hidden rounded-lg ring-1 ring-black/10 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 dark:ring-white/10 sm:w-[58px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className={cn(
+              "relative shrink-0 self-center overflow-hidden rounded-lg ring-1 ring-black/10 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 dark:ring-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+              featured ? "w-[62px] sm:w-[72px]" : "w-[52px] sm:w-[58px]"
+            )}
             aria-label={`Open ${project.name} case study`}
           >
             {project.coverImage ? (
@@ -105,7 +110,7 @@ function ProjectCard({
                 {project.name}
               </h3>
               {featured && (
-                <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary">
+                <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary-foreground shadow-[0_0_12px_-2px_hsl(221_83%_53%/0.55)]">
                   <Sparkles className="h-2 w-2" />
                   Featured
                 </span>

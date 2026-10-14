@@ -282,6 +282,123 @@ body {
       0 14px 32px -16px hsl(221 83% 40% / 0.35);
   }
 
+  /* Featured project card — rotating gradient stroke + traveling bead */
+  @property --featured-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  .project-card-featured {
+    border-color: transparent;
+    transform: scale(1.02);
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.1) inset,
+      0 20px 44px -16px hsl(221 83% 40% / 0.5),
+      0 0 32px -10px hsl(221 83% 60% / 0.35);
+  }
+
+  .project-card-featured::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: conic-gradient(
+      from var(--featured-angle),
+      hsl(210 100% 92% / 0.95) 0%,
+      hsl(221 83% 58% / 0.15) 18%,
+      hsl(221 83% 62% / 0.85) 36%,
+      hsl(221 83% 53% / 0.12) 55%,
+      hsl(210 95% 80% / 0.7) 72%,
+      hsl(221 83% 53% / 0.15) 88%,
+      hsl(210 100% 92% / 0.95) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: featured-stroke-spin 3.8s linear infinite;
+  }
+
+  .project-card-featured::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        130% 95% at 0% 0%,
+        hsl(221 83% 65% / 0.22),
+        transparent 55%
+      ),
+      radial-gradient(
+        100% 80% at 100% 100%,
+        hsl(221 83% 53% / 0.14),
+        transparent 50%
+      );
+    pointer-events: none;
+    animation: featured-wash-drift 7s ease-in-out infinite alternate;
+  }
+
+  .light .project-card-featured {
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.98) inset,
+      0 18px 40px -14px hsl(221 83% 40% / 0.28),
+      0 0 28px -8px hsl(221 83% 53% / 0.22);
+  }
+
+  .light .project-card-featured::before {
+    background: conic-gradient(
+      from var(--featured-angle),
+      hsl(221 83% 55% / 0.95) 0%,
+      hsl(221 83% 53% / 0.12) 20%,
+      hsl(214 80% 70% / 0.75) 40%,
+      hsl(221 83% 53% / 0.1) 60%,
+      hsl(221 83% 58% / 0.85) 80%,
+      hsl(221 83% 55% / 0.95) 100%
+    );
+  }
+
+  .light .project-card-featured::after {
+    background:
+      radial-gradient(
+        130% 95% at 0% 0%,
+        hsl(221 83% 53% / 0.14),
+        transparent 55%
+      ),
+      radial-gradient(
+        100% 80% at 100% 100%,
+        hsl(221 83% 53% / 0.08),
+        transparent 50%
+      );
+  }
+
+  .project-card-featured > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .project-card-featured.glass-card-hover:hover {
+    border-color: transparent;
+    transform: scale(1.03) translateY(-2px);
+    box-shadow:
+      0 1px 0 hsl(0 0% 100% / 0.12) inset,
+      0 22px 48px -14px hsl(221 83% 45% / 0.5),
+      0 0 36px -8px hsl(221 83% 60% / 0.4);
+  }
+
+  .project-card-featured.glass-card-hover:hover::before {
+    animation-duration: 2.4s;
+  }
+
   .glass-section {
     background:
       radial-gradient(900px circle at 15% 0%, hsl(221 83% 53% / 0.07), transparent 55%),
@@ -327,6 +444,23 @@ body {
   }
 }
 
+@keyframes featured-stroke-spin {
+  to {
+    --featured-angle: 360deg;
+  }
+}
+
+@keyframes featured-wash-drift {
+  0% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ambient-blob,
   .ambient-blob-delayed {
@@ -339,5 +473,18 @@ body {
     stroke-dasharray: 100 0;
     stroke-width: 1;
     filter: none;
+  }
+
+  .project-card-featured {
+    transform: none;
+  }
+
+  .project-card-featured::before,
+  .project-card-featured::after {
+    animation: none;
+  }
+
+  .project-card-featured.glass-card-hover:hover {
+    transform: none;
   }
 }
