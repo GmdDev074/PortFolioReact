@@ -6,25 +6,27 @@ import {
   useTransform,
   useReducedMotion,
 } from "framer-motion"
-import { CheckCircle2, FileText } from "lucide-react"
+import { FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/magnetic"
+import { PhoneFrame } from "@/components/ui/phone-frame"
 import { Constants } from "@/lib/constants"
-import { mobileProjects } from "@/data/projects"
+import { projects } from "@/data/projects"
 import { useLocation } from "wouter"
 import { useCanHoverInteract } from "@/hooks/use-motion-prefs"
 import { transition } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
-const heroShots = mobileProjects
-  .filter((p) => p.coverImage)
-  .slice(0, 3)
-  .map((p) => ({
-    id: p.id,
-    name: p.name,
-    src: p.coverImage!,
-    path: p.detailPath,
-  }))
+const showcase =
+  projects.find((p) => p.id === "crowdwave") ??
+  projects.find((p) => p.featured && p.coverImage) ??
+  projects.find((p) => p.coverImage)
+
+const showcaseShots = [
+  "/projects/crowdwave/CrowdWave03.webp",
+  "/projects/crowdwave/CrowdWave04.webp",
+  "/projects/crowdwave/CrowdWave05.webp",
+]
 
 export function Hero() {
   const [, setLocation] = useLocation()
@@ -41,6 +43,8 @@ export function Hero() {
   const blobOneY = useTransform(springY, [-0.5, 0.5], [-5, 5])
   const blobTwoX = useTransform(springX, [-0.5, 0.5], [10, -10])
   const blobTwoY = useTransform(springY, [-0.5, 0.5], [8, -8])
+  const stageX = useTransform(springX, [-0.5, 0.5], [-8, 8])
+  const stageY = useTransform(springY, [-0.5, 0.5], [-6, 6])
 
   const handleMouseMove = (event: MouseEvent<HTMLElement>) => {
     if (!canParallax || !sectionRef.current) return
@@ -57,13 +61,17 @@ export function Hero() {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })
   }
 
-  const handleViewResume = () => {
-    setLocation("/resume")
+  const openShowcase = () => {
+    if (showcase?.detailPath) setLocation(showcase.detailPath)
   }
 
   const stage = (y: number, delay: number) =>
     prefersReduced
-      ? { initial: false as const, animate: { opacity: 1, y: 0 }, transition: { duration: 0 } }
+      ? {
+          initial: false as const,
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0 },
+        }
       : {
           initial: { opacity: 0, y },
           animate: { opacity: 1, y: 0 },
@@ -76,52 +84,41 @@ export function Hero() {
       id="home"
       data-snap
       onMouseMove={handleMouseMove}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden glass-section pb-24 pt-16 sm:pt-20 lg:pb-0"
+      className="relative flex min-h-screen items-center overflow-hidden glass-section pb-24 pt-20 sm:pt-24 lg:pb-8"
     >
-      <div className="container relative z-10 mx-auto px-4 py-5 sm:px-6 sm:py-6 md:py-10">
-        <div className="mx-auto max-w-5xl">
-          <div className="mx-auto max-w-4xl text-center">
-            <motion.div
-              {...stage(10, 0.04)}
-              className="relative mb-4 inline-flex items-center sm:mb-6"
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 xl:gap-16">
+          {/* Copy — brand-first */}
+          <div className="text-center lg:text-left">
+            <motion.p
+              {...stage(8, 0.02)}
+              className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-primary sm:text-sm"
             >
-              {!prefersReduced && (
-                <motion.span
-                  aria-hidden
-                  className="absolute inset-0 rounded-full bg-primary/25"
-                  animate={{ opacity: [0.2, 0.35, 0.2] }}
-                  transition={{
-                    duration: 5.5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              )}
-              <span className="relative inline-flex rounded-full border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary sm:px-4 sm:py-2 sm:text-sm">
-                {Constants.HERO.badge}
-              </span>
-            </motion.div>
+              {Constants.HERO.badge}
+            </motion.p>
 
             <motion.h1
-              {...stage(18, 0.1)}
-              className="mb-4 px-2 font-display text-3xl font-bold tracking-tight sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
+              {...stage(16, 0.08)}
+              className="mb-4 font-display text-4xl font-bold tracking-tight sm:mb-5 sm:text-5xl md:text-6xl xl:text-7xl"
             >
-              {Constants.HERO.title}{" "}
-              <span className="block bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent sm:inline">
+              <span className="block text-foreground">{Constants.PERSONAL.name}</span>
+              <span className="mt-1 block bg-gradient-to-r from-primary via-primary to-primary/55 bg-clip-text text-transparent">
                 {Constants.HERO.titleHighlight}
               </span>
             </motion.h1>
 
             <motion.p
-              {...stage(10, 0.17)}
-              className="mx-auto mb-6 max-w-2xl px-4 text-base text-muted-foreground sm:mb-8 sm:px-0 sm:text-lg md:text-xl"
+              {...stage(10, 0.14)}
+              className="mx-auto mb-7 max-w-xl text-base text-muted-foreground sm:mb-8 sm:text-lg lg:mx-0"
             >
-              {Constants.HERO.description}
+              {showcase
+                ? `${showcase.name} and more — live Play Store apps built with Kotlin, Compose, and React Native.`
+                : Constants.HERO.description}
             </motion.p>
 
             <motion.div
-              {...stage(10, 0.24)}
-              className="mb-8 flex flex-col justify-center gap-3 px-4 sm:mb-10 sm:flex-row sm:gap-4 sm:px-0"
+              {...stage(10, 0.2)}
+              className="flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:flex-wrap lg:justify-start"
             >
               <Magnetic className="w-full sm:w-auto" strength={0.18}>
                 <Button size="lg" onClick={scrollToProjects} className="w-full sm:w-auto">
@@ -141,58 +138,88 @@ export function Hero() {
               <Button
                 size="lg"
                 variant="outline"
-                onClick={handleViewResume}
+                onClick={() => setLocation("/resume")}
                 className="w-full transition-colors duration-200 hover:bg-primary hover:text-primary-foreground sm:w-auto"
               >
                 <FileText className="mr-2 h-4 w-4" />
                 {Constants.HERO.viewResume}
               </Button>
             </motion.div>
-
-            <motion.div
-              {...stage(8, 0.28)}
-              className="mb-8 flex flex-wrap justify-center gap-4 px-4 sm:mb-10 sm:gap-6 sm:px-0"
-            >
-              {Constants.HERO.features.map((feature) => (
-                <div
-                  key={feature}
-                  className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm"
-                >
-                  <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-primary sm:h-5 sm:w-5" />
-                  <span className="whitespace-nowrap">{feature}</span>
-                </div>
-              ))}
-            </motion.div>
           </div>
 
-          {heroShots.length > 0 && (
+          {/* Dominant CrowdWave phone stage */}
+          {showcase?.coverImage && (
             <motion.div
-              {...stage(16, 0.32)}
-              className="mx-auto flex max-w-3xl items-end justify-center gap-3 sm:gap-5"
+              {...stage(20, 0.12)}
+              className="relative mx-auto flex w-full max-w-[420px] items-end justify-center lg:max-w-none lg:justify-end"
             >
-              {heroShots.map((shot, index) => (
-                <button
-                  key={shot.id}
-                  type="button"
-                  onClick={() => shot.path && setLocation(shot.path)}
-                  className={cn(
-                    "group relative overflow-hidden rounded-[1.25rem] border border-white/15 bg-black/5 shadow-[0_20px_50px_-28px_rgba(15,23,42,0.55)]",
-                    "transition-transform duration-300 ease-out hover:-translate-y-1",
-                    index === 1
-                      ? "z-10 w-[32%] max-w-[160px] sm:max-w-[180px]"
-                      : "w-[26%] max-w-[130px] opacity-90 sm:max-w-[150px]"
-                  )}
-                  aria-label={`View ${shot.name} case study`}
+              <motion.div
+                className="relative aspect-[10/12] w-full max-w-[380px] sm:max-w-[420px]"
+                style={canParallax ? { x: stageX, y: stageY } : undefined}
+              >
+                {/* Depth phones — no labels / badges on media */}
+                <div
+                  aria-hidden
+                  className="absolute bottom-[6%] left-[-4%] w-[42%] -rotate-[14deg] opacity-55 sm:left-[-8%] sm:w-[40%]"
                 >
-                  <img
-                    src={shot.src}
-                    alt={`${shot.name} screenshot`}
-                    className="aspect-[9/19] w-full object-cover object-top"
-                    loading={index === 1 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
+                  <PhoneFrame size="sm">
+                    <img
+                      src={showcaseShots[2]}
+                      alt=""
+                      className="aspect-[9/19] w-full object-cover object-top"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </PhoneFrame>
+                </div>
+                <div
+                  aria-hidden
+                  className="absolute bottom-[4%] right-[-2%] w-[44%] rotate-[12deg] opacity-70 sm:right-[-6%] sm:w-[42%]"
+                >
+                  <PhoneFrame size="sm">
+                    <img
+                      src={showcaseShots[1]}
+                      alt=""
+                      className="aspect-[9/19] w-full object-cover object-top"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </PhoneFrame>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={openShowcase}
+                  className={cn(
+                    "absolute bottom-0 left-1/2 z-10 w-[58%] -translate-x-1/2",
+                    "transition-transform duration-300 ease-out hover:-translate-y-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  )}
+                  aria-label={`Open ${showcase.name} case study`}
+                >
+                  {!prefersReduced && (
+                    <motion.span
+                      aria-hidden
+                      className="pointer-events-none absolute -inset-6 -z-10 rounded-full bg-primary/20 blur-3xl"
+                      animate={{ opacity: [0.25, 0.45, 0.25] }}
+                      transition={{
+                        duration: 5.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  )}
+                  <PhoneFrame size="lg" className="shadow-[0_40px_80px_-30px_rgba(15,23,42,0.75)]">
+                    <img
+                      src={showcaseShots[0]}
+                      alt={`${showcase.name} app screenshot`}
+                      className="aspect-[9/19] w-full object-cover object-top"
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                    />
+                  </PhoneFrame>
                 </button>
-              ))}
+              </motion.div>
             </motion.div>
           )}
         </div>
@@ -206,6 +233,10 @@ export function Hero() {
         <motion.div
           className="ambient-blob-delayed absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/[0.07] blur-3xl"
           style={canParallax ? { x: blobTwoX, y: blobTwoY } : undefined}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background via-background/40 to-transparent lg:h-24"
         />
       </div>
     </section>

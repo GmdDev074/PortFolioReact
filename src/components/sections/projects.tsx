@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { motion, useReducedMotion } from "framer-motion"
-import { ArrowUpRight, Smartphone } from "lucide-react"
+import { ArrowUpRight, Smartphone, Sparkles } from "lucide-react"
 import { useLocation } from "wouter"
 import { mobileProjects } from "@/data/projects"
 import type { ProjectListItem } from "@/types/project"
@@ -30,7 +30,7 @@ function StoreIconButton({
       className="flex h-6 w-6 items-center justify-center rounded-md glass-icon transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:border-primary/30"
       onClick={(e) => e.stopPropagation()}
     >
-      <img src={imageSrc} alt="" className="h-3.5 w-3.5 object-contain" />
+      <img src={imageSrc} alt="" className="h-3 w-3 object-contain" />
     </a>
   )
 }
@@ -47,6 +47,11 @@ function ProjectCard({
   const [, setLocation] = useLocation()
   const prefersReduced = useReducedMotion()
   const canFocus = useCanHoverInteract()
+  const featured = Boolean(project.featured)
+
+  const openDetail = () => {
+    if (project.detailPath) setLocation(project.detailPath)
+  }
 
   return (
     <motion.div
@@ -59,71 +64,107 @@ function ProjectCard({
       onHoverEnd={() => canFocus && onHoverChange(null)}
     >
       <motion.div
-        animate={{ opacity: canFocus && dimmed ? 0.78 : 1 }}
+        animate={{ opacity: canFocus && dimmed ? 0.7 : 1 }}
         transition={transition.hover}
-        className="h-full overflow-visible"
+        className="h-full"
       >
-        <div
+        <article
           className={cn(
-            "group h-full glass-card glass-card-hover rounded-xl p-3",
-            "transition-transform duration-300 ease-out",
-            "hover:-translate-y-1"
+            "group relative flex h-full gap-3 overflow-hidden rounded-xl p-3 glass-card glass-card-hover",
+            "transition-transform duration-300 ease-out hover:-translate-y-0.5",
+            featured &&
+              "ring-1 ring-primary/40 shadow-[0_12px_28px_-18px_hsl(221_83%_40%/0.45)]"
           )}
         >
-          <div className="mb-2 flex items-center gap-2 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
-            <div className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-md bg-primary/10">
-              <Smartphone className="h-3 w-3 text-primary transition-transform duration-300 ease-out group-hover:scale-[1.04]" />
-            </div>
-            <h3 className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
-              {project.name}
-            </h3>
-            {project.featured && (
-              <span className="shrink-0 rounded-full bg-primary px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary-foreground">
-                Featured
-              </span>
-            )}
-          </div>
-
-          <p className="mb-2.5 line-clamp-2 text-[11px] leading-snug text-muted-foreground transition-transform duration-300 ease-out group-hover:-translate-y-0.5 sm:text-xs">
-            {project.tagline}
-          </p>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => project.detailPath && setLocation(project.detailPath)}
-              className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-semibold text-foreground transition-[background-color,border-color] duration-300 ease-out hover:border-primary/35 hover:bg-primary/10 sm:text-xs"
-            >
-              Explore Project
-              <ArrowUpRight className="h-3 w-3 transition-transform duration-300 ease-out group-hover:translate-x-1" />
-            </button>
-
-            {(project.playStore || project.appStore) && (
-              <div className="flex shrink-0 items-center gap-1 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
-                {project.appStore && (
-                  <StoreIconButton
-                    href={project.appStore}
-                    label={`${project.name} on the App Store`}
-                    imageSrc={APP_STORE_ICON}
-                  />
-                )}
-                {project.playStore && (
-                  <StoreIconButton
-                    href={project.playStore}
-                    label={`${project.name} on Google Play`}
-                    imageSrc={GOOGLE_PLAY_ICON}
-                  />
-                )}
+          {/* Real screenshot — no device chrome */}
+          <button
+            type="button"
+            onClick={openDetail}
+            className="relative w-[52px] shrink-0 self-center overflow-hidden rounded-lg ring-1 ring-black/10 transition-transform duration-300 ease-out group-hover:-translate-y-0.5 dark:ring-white/10 sm:w-[58px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label={`Open ${project.name} case study`}
+          >
+            {project.coverImage ? (
+              <img
+                src={project.coverImage}
+                alt={`${project.name} screenshot`}
+                className="aspect-[9/19] w-full object-cover object-top"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <div className="flex aspect-[9/19] items-center justify-center bg-muted">
+                <Smartphone className="h-4 w-4 text-muted-foreground" />
               </div>
             )}
-          </div>
+          </button>
 
-          <div className="mt-2 transition-transform duration-300 ease-out group-hover:-translate-y-0.5">
-            <span className="inline-flex rounded-full bg-primary/10 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary">
-              Mobile App
-            </span>
+          {/* Copy + actions */}
+          <div className="flex min-w-0 flex-1 flex-col py-0.5">
+            <div className="mb-1 flex items-center gap-1.5">
+              <h3 className="min-w-0 truncate text-sm font-semibold text-foreground">
+                {project.name}
+              </h3>
+              {featured && (
+                <span className="inline-flex shrink-0 items-center gap-0.5 rounded-full bg-primary/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wide text-primary">
+                  <Sparkles className="h-2 w-2" />
+                  Featured
+                </span>
+              )}
+            </div>
+
+            <p className="mb-2 line-clamp-3 text-[11px] leading-relaxed text-muted-foreground sm:line-clamp-4 sm:text-xs">
+              {project.description ?? project.tagline}
+            </p>
+
+            {project.tech && project.tech.length > 0 && (
+              <div className="mb-2.5 flex flex-wrap gap-1">
+                {project.tech.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[8px] font-medium text-primary sm:text-[9px]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-auto flex items-center gap-1.5 pt-0.5">
+              <button
+                type="button"
+                onClick={openDetail}
+                className={cn(
+                  "inline-flex items-center gap-0.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors duration-200",
+                  featured
+                    ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                    : "border border-white/10 bg-white/[0.04] text-foreground hover:border-primary/35 hover:bg-primary/10"
+                )}
+              >
+                Explore
+                <ArrowUpRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </button>
+
+              {(project.playStore || project.appStore) && (
+                <div className="ml-auto flex items-center gap-1">
+                  {project.appStore && (
+                    <StoreIconButton
+                      href={project.appStore}
+                      label={`${project.name} on the App Store`}
+                      imageSrc={APP_STORE_ICON}
+                    />
+                  )}
+                  {project.playStore && (
+                    <StoreIconButton
+                      href={project.playStore}
+                      label={`${project.name} on Google Play`}
+                      imageSrc={GOOGLE_PLAY_ICON}
+                    />
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        </article>
       </motion.div>
     </motion.div>
   )
@@ -155,7 +196,7 @@ export function Projects() {
           </h3>
         </SectionReveal>
 
-        <div className="grid grid-cols-1 items-start gap-2.5 overflow-visible pt-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 items-stretch gap-3 overflow-visible sm:grid-cols-2 lg:grid-cols-3">
           {mobileProjects.map((project) => (
             <ProjectCard
               key={project.id}

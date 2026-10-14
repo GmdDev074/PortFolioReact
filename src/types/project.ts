@@ -63,9 +63,13 @@ export interface ProjectListItem {
   id: string
   name: string
   tagline: string
+  /** Longer blurb for project cards */
+  description?: string
   category: "mobile" | "web"
   featured?: boolean
   coverImage?: string
+  /** Stack chips shown on project cards */
+  tech?: string[]
   playStore?: string
   appStore?: string
   url?: string
