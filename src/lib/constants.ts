@@ -165,12 +165,14 @@ export const Constants = {
     }
   ],
 
-  // Navigation Links
+  // Navigation Links — order matches Home sections
   NAV_LINKS: [
-    { name: 'Skills', href: '#skills' },
+    { name: 'Hero', href: '#home' },
     { name: 'Projects', href: '#projects' },
+    { name: 'Skills', href: '#skills' },
+    { name: 'Process', href: '#process' },
     { name: 'Why Me', href: '#about' },
-    { name: 'Contact', href: '#contact' }
+    { name: 'Contact', href: '#contact' },
   ],
 
   // Contact Section
@@ -201,9 +203,12 @@ export const Constants = {
     connect: 'Connect',
     allRightsReserved: 'All rights reserved.',
     links: [
-      { name: 'Why Me', href: '#about' },
+      { name: 'Hero', href: '#home' },
       { name: 'Projects', href: '#projects' },
-      { name: 'Contact', href: '#contact' }
+      { name: 'Skills', href: '#skills' },
+      { name: 'Process', href: '#process' },
+      { name: 'Why Me', href: '#about' },
+      { name: 'Contact', href: '#contact' },
     ],
     social: [
       { name: 'GitHub', href: 'https://github.com/GmdDev074', icon: 'Github' },

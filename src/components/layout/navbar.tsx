@@ -109,15 +109,15 @@ export function Navbar() {
       }
 
       const sections = Constants.NAV_LINKS.map((link) => link.href.slice(1))
-      const currentSection = sections.find((section) => {
+      // Walk bottom → top so the last section past the marker wins (matches scroll order)
+      let currentSection = ""
+      for (const section of sections) {
         const element = document.getElementById(section)
-        if (element) {
-          const rect = element.getBoundingClientRect()
-          return rect.top <= 120 && rect.bottom >= 120
-        }
-        return false
-      })
-      setActiveSection(currentSection ? `#${currentSection}` : "")
+        if (!element) continue
+        const rect = element.getBoundingClientRect()
+        if (rect.top <= 120) currentSection = section
+      }
+      setActiveSection(currentSection ? `#${currentSection}` : "#home")
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -183,8 +183,8 @@ export function Navbar() {
             className={cn(
               "relative z-10 rounded-full font-medium transition-colors duration-200",
               opts?.bottom
-                ? "flex-1 px-2 py-2.5 text-center text-[11px] sm:text-xs"
-                : "px-3 py-1.5 text-xs xl:px-3.5 xl:text-sm",
+                ? "flex-1 px-1 py-2.5 text-center text-[10px] sm:px-1.5 sm:text-[11px]"
+                : "px-2.5 py-1.5 text-xs xl:px-3 xl:text-sm",
               isActive || hoveredLink === link.href
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"
