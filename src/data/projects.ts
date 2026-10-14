@@ -2,6 +2,17 @@ import type { ProjectListItem } from "@/types/project"
 
 export const projects: ProjectListItem[] = [
   {
+    id: "crowdwave",
+    name: "CrowdWave",
+    tagline: "Send anything, anywhere — by travelers already on the way.",
+    category: "mobile",
+    featured: true,
+    coverImage: "/projects/crowdwave/CrowdWave03.webp",
+    detailPath: "/projects/crowdwave",
+    playStore:
+      "https://play.google.com/store/apps/details?id=com.crowdwave.courier&hl=en",
+  },
+  {
     id: "courial",
     name: "Courial",
     tagline: "Premium chauffeur, valet, delivery & concierge — all in one app.",
@@ -13,6 +24,7 @@ export const projects: ProjectListItem[] = [
       "https://play.google.com/store/apps/details?id=com.courial.user&hl=en",
     appStore: "https://apps.apple.com/us/app/courial/id1521638262",
   },
+
   {
     id: "versus",
     name: "Versus Sports Simulator",
