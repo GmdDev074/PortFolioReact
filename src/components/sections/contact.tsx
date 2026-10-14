@@ -1,6 +1,7 @@
 import { Github, Linkedin, Mail, MapPin, Phone } from "lucide-react"
 import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Atmosphere } from "@/components/motion/atmosphere"
 import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
 
 export function Contact() {
@@ -33,8 +34,13 @@ export function Contact() {
   ]
 
   return (
-    <section id="contact" data-snap className="glass-section py-5 sm:py-6 md:py-10">
-      <div className="container mx-auto px-4 sm:px-6">
+    <section
+      id="contact"
+      data-snap
+      className="relative overflow-hidden glass-section py-5 sm:py-6 md:py-10"
+    >
+      <Atmosphere tone="contact" />
+      <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <SectionReveal className="mb-8 text-center sm:mb-12">
           <p className="mb-2 text-sm font-medium text-primary sm:text-base">
             {Constants.CONTACT_SECTION.subtitle}

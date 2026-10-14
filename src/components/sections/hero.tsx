@@ -9,6 +9,7 @@ import {
 import { FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Magnetic } from "@/components/motion/magnetic"
+import { Atmosphere } from "@/components/motion/atmosphere"
 import { PhoneFrame } from "@/components/ui/phone-frame"
 import { Constants } from "@/lib/constants"
 import { projects } from "@/data/projects"
@@ -86,6 +87,8 @@ export function Hero() {
       onMouseMove={handleMouseMove}
       className="relative flex min-h-screen items-center overflow-hidden glass-section pb-24 pt-20 sm:pt-24 lg:pb-8"
     >
+      <Atmosphere tone="hero" />
+
       <div className="container relative z-10 mx-auto px-4 sm:px-6">
         <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12 xl:gap-16">
           {/* Copy — brand-first */}
@@ -225,18 +228,18 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <motion.div
-          className="ambient-blob absolute -right-40 -top-40 h-80 w-80 rounded-full bg-primary/[0.07] blur-3xl"
+          className="ambient-blob absolute -right-40 -top-40 h-80 w-80 rounded-full bg-primary/[0.1] blur-3xl dark:bg-primary/[0.07]"
           style={canParallax ? { x: blobOneX, y: blobOneY } : undefined}
         />
         <motion.div
-          className="ambient-blob-delayed absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/[0.07] blur-3xl"
+          className="ambient-blob-delayed absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-primary/[0.1] blur-3xl dark:bg-primary/[0.07]"
           style={canParallax ? { x: blobTwoX, y: blobTwoY } : undefined}
         />
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background via-background/40 to-transparent lg:h-24"
+          className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background via-background/50 to-transparent lg:h-24"
         />
       </div>
     </section>

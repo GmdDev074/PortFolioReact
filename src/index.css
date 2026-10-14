@@ -126,6 +126,156 @@ body {
     animation: ambient-drift 34s ease-in-out infinite alternate-reverse;
   }
 
+  /* Soft mesh + grain atmosphere (hero / contact) */
+  .atmosphere-root {
+    isolation: isolate;
+  }
+
+  .atmosphere-mesh {
+    position: absolute;
+    inset: -18%;
+    background:
+      radial-gradient(
+        ellipse 48% 42% at 18% 28%,
+        hsl(221 83% 53% / 0.28),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 42% 38% at 82% 18%,
+        hsl(199 89% 48% / 0.18),
+        transparent 68%
+      ),
+      radial-gradient(
+        ellipse 40% 44% at 72% 78%,
+        hsl(230 70% 58% / 0.16),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 36% 32% at 12% 82%,
+        hsl(210 90% 62% / 0.14),
+        transparent 65%
+      );
+    filter: blur(28px) saturate(1.15);
+    animation: atmosphere-mesh-drift 26s ease-in-out infinite alternate;
+    opacity: 0.9;
+  }
+
+  .atmosphere-mesh-hero {
+    opacity: 1;
+  }
+
+  .atmosphere-mesh-contact {
+    opacity: 0.85;
+    inset: -12%;
+    filter: blur(34px) saturate(1.1);
+  }
+
+  .atmosphere-mesh-secondary {
+    position: absolute;
+    inset: -10%;
+    background:
+      radial-gradient(
+        ellipse 55% 40% at 50% 0%,
+        hsl(221 83% 60% / 0.12),
+        transparent 65%
+      ),
+      radial-gradient(
+        ellipse 50% 35% at 100% 50%,
+        hsl(200 85% 55% / 0.08),
+        transparent 60%
+      );
+    filter: blur(40px);
+    animation: atmosphere-mesh-drift 32s ease-in-out infinite alternate-reverse;
+    opacity: 0.75;
+  }
+
+  .atmosphere-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+  }
+
+  .atmosphere-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 75% 65% at 50% 45%,
+      transparent 40%,
+      hsl(var(--background) / 0.35) 100%
+    );
+  }
+
+  /* Light mode needs stronger mesh so sections aren't flat white */
+  .light .atmosphere-mesh,
+  :root:not(.dark) .atmosphere-mesh {
+    background:
+      radial-gradient(
+        ellipse 50% 44% at 16% 26%,
+        hsl(221 83% 55% / 0.32),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 44% 40% at 84% 16%,
+        hsl(199 85% 52% / 0.22),
+        transparent 70%
+      ),
+      radial-gradient(
+        ellipse 42% 46% at 74% 80%,
+        hsl(250 65% 62% / 0.14),
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 38% 34% at 10% 84%,
+        hsl(210 90% 58% / 0.2),
+        transparent 68%
+      );
+    opacity: 1;
+  }
+
+  .light .atmosphere-mesh-secondary,
+  :root:not(.dark) .atmosphere-mesh-secondary {
+    background:
+      radial-gradient(
+        ellipse 60% 45% at 48% -5%,
+        hsl(221 83% 58% / 0.18),
+        transparent 68%
+      ),
+      radial-gradient(
+        ellipse 48% 38% at 105% 55%,
+        hsl(195 80% 50% / 0.12),
+        transparent 62%
+      );
+    opacity: 0.95;
+  }
+
+  .light .atmosphere-grain,
+  :root:not(.dark) .atmosphere-grain {
+    opacity: 0.28;
+    mix-blend-mode: multiply;
+  }
+
+  .light .atmosphere-vignette,
+  :root:not(.dark) .atmosphere-vignette {
+    background: radial-gradient(
+      ellipse 78% 68% at 50% 42%,
+      transparent 35%,
+      hsl(210 40% 98% / 0.55) 100%
+    );
+  }
+
+  .dark .atmosphere-mesh {
+    opacity: 0.7;
+  }
+
+  .dark .atmosphere-grain {
+    opacity: 0.18;
+    mix-blend-mode: overlay;
+  }
+
   /* Apple-like glass shell for desktop navbar */
   .glass-nav-shell {
     position: relative;
@@ -461,9 +611,23 @@ body {
   }
 }
 
+@keyframes atmosphere-mesh-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2.5%, -1.5%, 0) scale(1.04);
+  }
+  100% {
+    transform: translate3d(-2%, 2%, 0) scale(1.02);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ambient-blob,
-  .ambient-blob-delayed {
+  .ambient-blob-delayed,
+  .atmosphere-mesh,
+  .atmosphere-mesh-secondary {
     animation: none;
   }
 
