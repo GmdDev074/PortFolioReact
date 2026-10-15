@@ -70,7 +70,10 @@ export function ContactForm() {
 
       if (!contentType.includes("application/json")) {
         throw new Error(
-          "Contact API is not reachable. Restart `npm run dev`, or redeploy on Vercel with GMAIL_USER and GMAIL_APP_PASSWORD set."
+          `Contact API returned ${res.status} (not JSON). ` +
+            (typeof window !== "undefined" && window.location.hostname === "localhost"
+              ? "Restart `npm run dev` after pulling the latest code."
+              : "On Vercel: Redeploy the project so /api/contact is live (env vars alone are not enough).")
         )
       }
 

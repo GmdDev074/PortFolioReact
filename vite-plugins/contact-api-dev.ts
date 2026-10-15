@@ -35,8 +35,8 @@ export function contactApiDevPlugin(env: Record<string, string>): Plugin {
     name: "contact-api-dev",
     configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
-        const url = req.url?.split("?")[0]
-        if (url !== "/api/contact") {
+        const url = req.url?.split("?")[0] ?? ""
+        if (url !== "/api/contact" && url !== "/api/contact/") {
           next()
           return
         }
