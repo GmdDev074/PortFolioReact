@@ -68,20 +68,29 @@ export function ContactForm() {
       const contentType = res.headers.get("content-type") || ""
       const raw = await res.text()
 
-      if (!contentType.includes("application/json")) {
-        throw new Error(
-          `Contact API returned ${res.status} (not JSON). ` +
-            (typeof window !== "undefined" && window.location.hostname === "localhost"
-              ? "Restart `npm run dev` after pulling the latest code."
-              : "On Vercel: Redeploy the project so /api/contact is live (env vars alone are not enough).")
-        )
-      }
-
-      const payload = JSON.parse(raw || "{}") as {
+      let payload: {
         ok?: boolean
         error?: string
         warning?: string
         thanksSent?: boolean
+      } = {}
+
+      try {
+        payload = JSON.parse(raw || "{}")
+      } catch {
+        throw new Error(
+          `Contact API returned ${res.status} (not JSON). ` +
+            (typeof window !== "undefined" &&
+            window.location.hostname === "localhost"
+              ? "Restart `npm run dev` after pulling the latest code."
+              : "Redeploy on Vercel so /api/contact is live.")
+        )
+      }
+
+      if (!contentType.includes("application/json") && !payload.error && !payload.ok) {
+        throw new Error(
+          `Contact API returned ${res.status} without a usable JSON body. Redeploy on Vercel.`
+        )
       }
 
       if (!res.ok || !payload.ok) {
