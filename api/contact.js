@@ -50,7 +50,20 @@ function escapeHtml(value) {
 
 function cidImg(cid, size) {
   const s = size || 14
-  return `<img src="cid:${cid}" width="${s}" height="${s}" alt="" style="display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;" />`
+  return `<img src="cid:${cid}" width="${s}" height="${s}" alt="" style="display:block;border:0;outline:none;text-decoration:none;line-height:0;" />`
+}
+
+function pillButton(href, cid, label, filled) {
+  const bg = filled ? brand.primary : brand.primarySoft
+  const color = filled ? "#ffffff" : brand.primary
+  const border = filled ? "none" : `1px solid ${brand.primarySoftBorder}`
+  const weight = filled ? 700 : 600
+  const textColor = !filled && label === "GitHub" ? brand.ink : color
+  return `<a href="${href}" style="display:inline-block;background:${bg};color:${textColor};text-decoration:none;border-radius:999px;border:${border};">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr>
+<td style="padding:11px 6px 11px 15px;vertical-align:middle;line-height:0;">${cidImg(cid, 14)}</td>
+<td style="padding:11px 15px 11px 2px;vertical-align:middle;font-size:13px;font-weight:${weight};color:${textColor};line-height:1;white-space:nowrap;">${escapeHtml(label)}</td>
+</tr></table></a>`
 }
 
 function iconChip(cid) {
@@ -142,7 +155,7 @@ ${sectionTitle(CID.message, "The message")}
 <div style="padding:18px;border-radius:12px;background:${brand.primarySoft};border:1px solid ${brand.primarySoftBorder};color:${brand.ink};font-size:14px;line-height:1.7;">${message}</div>`,
     footerInnerHtml: `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0 0;"><tr>
 <td align="center" bgcolor="${brand.primary}" style="border-radius:12px;background-color:${brand.primary};">
-<a href="${replyHref}" style="display:block;padding:15px 20px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;"><span style="margin-right:8px;vertical-align:middle;">${cidImg(CID.reply, 16)}</span>Reply to ${name}</a>
+<a href="${replyHref}" style="display:block;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;"><tr><td align="center" style="padding:15px 20px;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 auto;"><tr><td style="vertical-align:middle;padding:0 8px 0 0;line-height:0;">${cidImg(CID.reply, 16)}</td><td style="vertical-align:middle;font-size:15px;font-weight:700;color:#ffffff;line-height:1;white-space:nowrap;">Reply to ${name}</td></tr></table></td></tr></table></a>
 </td></tr></table>
 <p style="margin:18px 0 0;font-size:12px;line-height:1.55;color:${brand.muted};">Sent from <a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app</a>. Reply directly to continue the conversation.</p>`,
   })
@@ -169,16 +182,19 @@ function thanksHtml(data, ownerName) {
 <p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:${brand.ink};">Thanks for reaching out about <strong style="font-weight:700;">${subject}</strong>. I’ve received your message and usually reply within a day.</p>
 <p style="margin:0 0 18px;font-size:14px;color:${brand.muted};">Meanwhile, explore my work or connect on these channels:</p>
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr>
-<td style="padding:0 8px 8px 0;"><a href="${LINKS.portfolio}" style="display:inline-block;background:${brand.primary};color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 16px;border-radius:999px;"><span style="margin-right:6px;vertical-align:middle;">${cidImg(CID.external, 14)}</span>View Portfolio</a></td>
-<td style="padding:0 8px 8px 0;"><a href="${LINKS.linkedin}" style="display:inline-block;background:${brand.primarySoft};color:${brand.primary};text-decoration:none;font-weight:600;font-size:13px;padding:11px 15px;border-radius:999px;border:1px solid ${brand.primarySoftBorder};"><span style="margin-right:6px;vertical-align:middle;">${cidImg(CID.linkedin, 14)}</span>LinkedIn</a></td>
-<td style="padding:0 0 8px 0;"><a href="${LINKS.github}" style="display:inline-block;background:${brand.primarySoft};color:${brand.ink};text-decoration:none;font-weight:600;font-size:13px;padding:11px 15px;border-radius:999px;border:1px solid ${brand.primarySoftBorder};"><span style="margin-right:6px;vertical-align:middle;">${cidImg(CID.github, 14)}</span>GitHub</a></td>
+<td style="padding:0 8px 8px 0;vertical-align:middle;">${pillButton(LINKS.portfolio, CID.external, "View Portfolio", true)}</td>
+<td style="padding:0 8px 8px 0;vertical-align:middle;">${pillButton(LINKS.linkedin, CID.linkedin, "LinkedIn", false)}</td>
+<td style="padding:0 0 8px 0;vertical-align:middle;">${pillButton(LINKS.github, CID.github, "GitHub", false)}</td>
 </tr></table>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.primarySoftBorder};border-radius:14px;background:${brand.softBg};"><tr>
 <td style="padding:18px 12px 18px 18px;width:56px;vertical-align:middle;"><div style="width:48px;height:48px;line-height:48px;border-radius:999px;background:${brand.primary};color:#ffffff;font-size:15px;font-weight:700;text-align:center;">${escapeHtml(initials)}</div></td>
 <td style="padding:18px 18px 18px 4px;vertical-align:middle;">
 <p style="margin:0;color:${brand.ink};font-weight:700;font-size:15px;">${owner}</p>
 <p style="margin:3px 0 0;color:${brand.muted};font-size:13px;">Android Developer</p>
-<p style="margin:8px 0 0;font-size:13px;"><a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app&nbsp;<span style="vertical-align:middle;">${cidImg(CID.externalBlue, 12)}</span></a></p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 0;"><tr>
+<td style="vertical-align:middle;padding:0 4px 0 0;font-size:13px;font-weight:600;line-height:1;"><a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app</a></td>
+<td style="vertical-align:middle;line-height:0;"><a href="${LINKS.portfolio}" style="text-decoration:none;line-height:0;">${cidImg(CID.externalBlue, 12)}</a></td>
+</tr></table>
 </td></tr></table>`,
     footerInnerHtml: `<div style="height:1px;background:${brand.border};margin:22px 0 16px;"></div>
 <p style="margin:0;font-size:12px;line-height:1.55;color:${brand.muted};">You received this because you submitted the contact form on Muhammad Salman’s portfolio.</p>`,

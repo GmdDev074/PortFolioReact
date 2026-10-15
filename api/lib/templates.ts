@@ -45,7 +45,38 @@ const brand = {
 }
 
 function cidImg(cid: string, size = 14): string {
-  return `<img src="cid:${cid}" width="${size}" height="${size}" alt="" style="display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;" />`
+  return `<img src="cid:${cid}" width="${size}" height="${size}" alt="" style="display:block;border:0;outline:none;text-decoration:none;line-height:0;" />`
+}
+
+/** Email-safe pill: icon + label vertically centered via nested table */
+function pillButton(
+  href: string,
+  cid: string,
+  label: string,
+  opts: { filled?: boolean; iconSize?: number } = {}
+): string {
+  const { filled = false, iconSize = 14 } = opts
+  const bg = filled ? brand.primary : brand.primarySoft
+  const color = filled ? "#ffffff" : brand.primary
+  const border = filled
+    ? "none"
+    : `1px solid ${brand.primarySoftBorder}`
+  const weight = filled ? 700 : 600
+  // GitHub label uses ink in mockup
+  const textColor = !filled && label === "GitHub" ? brand.ink : color
+
+  return `<a href="${href}" style="display:inline-block;background:${bg};color:${textColor};text-decoration:none;border-radius:999px;border:${border};">
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+      <tr>
+        <td style="padding:11px 6px 11px 15px;vertical-align:middle;line-height:0;">
+          ${cidImg(cid, iconSize)}
+        </td>
+        <td style="padding:11px 15px 11px 2px;vertical-align:middle;font-size:13px;font-weight:${weight};color:${textColor};line-height:1;white-space:nowrap;">
+          ${escapeHtml(label)}
+        </td>
+      </tr>
+    </table>
+  </a>`
 }
 
 function iconChip(cid: string): string {
@@ -199,8 +230,19 @@ export function inquiryEmailHtml(data: ContactPayload): string {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0 0;">
       <tr>
         <td align="center" bgcolor="${brand.primary}" style="border-radius:12px;background-color:${brand.primary};">
-          <a href="${replyHref}" style="display:block;padding:15px 20px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;">
-            <span style="margin-right:8px;vertical-align:middle;">${cidImg(EMAIL_ICON_CIDS.reply, 16)}</span>Reply to ${name}
+          <a href="${replyHref}" style="display:block;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;">
+              <tr>
+                <td align="center" style="padding:15px 20px;">
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 auto;">
+                    <tr>
+                      <td style="vertical-align:middle;padding:0 8px 0 0;line-height:0;">${cidImg(EMAIL_ICON_CIDS.reply, 16)}</td>
+                      <td style="vertical-align:middle;font-size:15px;font-weight:700;color:#ffffff;line-height:1;white-space:nowrap;">Reply to ${name}</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
           </a>
         </td>
       </tr>
@@ -248,20 +290,14 @@ export function thankYouEmailHtml(
 
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
       <tr>
-        <td style="padding:0 8px 8px 0;">
-          <a href="${PORTFOLIO_LINKS.portfolio}" style="display:inline-block;background:${brand.primary};color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 16px;border-radius:999px;">
-            <span style="margin-right:6px;vertical-align:middle;">${cidImg(EMAIL_ICON_CIDS.external, 14)}</span>View Portfolio
-          </a>
+        <td style="padding:0 8px 8px 0;vertical-align:middle;">
+          ${pillButton(PORTFOLIO_LINKS.portfolio, EMAIL_ICON_CIDS.external, "View Portfolio", { filled: true })}
         </td>
-        <td style="padding:0 8px 8px 0;">
-          <a href="${PORTFOLIO_LINKS.linkedin}" style="display:inline-block;background:${brand.primarySoft};color:${brand.primary};text-decoration:none;font-weight:600;font-size:13px;padding:11px 15px;border-radius:999px;border:1px solid ${brand.primarySoftBorder};">
-            <span style="margin-right:6px;vertical-align:middle;">${cidImg(EMAIL_ICON_CIDS.linkedin, 14)}</span>LinkedIn
-          </a>
+        <td style="padding:0 8px 8px 0;vertical-align:middle;">
+          ${pillButton(PORTFOLIO_LINKS.linkedin, EMAIL_ICON_CIDS.linkedin, "LinkedIn")}
         </td>
-        <td style="padding:0 0 8px 0;">
-          <a href="${PORTFOLIO_LINKS.github}" style="display:inline-block;background:${brand.primarySoft};color:${brand.ink};text-decoration:none;font-weight:600;font-size:13px;padding:11px 15px;border-radius:999px;border:1px solid ${brand.primarySoftBorder};">
-            <span style="margin-right:6px;vertical-align:middle;">${cidImg(EMAIL_ICON_CIDS.github, 14)}</span>GitHub
-          </a>
+        <td style="padding:0 0 8px 0;vertical-align:middle;">
+          ${pillButton(PORTFOLIO_LINKS.github, EMAIL_ICON_CIDS.github, "GitHub")}
         </td>
       </tr>
     </table>
@@ -276,11 +312,16 @@ export function thankYouEmailHtml(
         <td style="padding:18px 18px 18px 4px;vertical-align:middle;">
           <p style="margin:0;color:${brand.ink};font-weight:700;font-size:15px;">${owner}</p>
           <p style="margin:3px 0 0;color:${brand.muted};font-size:13px;">Android Developer</p>
-          <p style="margin:8px 0 0;font-size:13px;">
-            <a href="${PORTFOLIO_LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">
-              m-salman-dev.vercel.app&nbsp;<span style="vertical-align:middle;">${cidImg(EMAIL_ICON_CIDS.externalBlue, 12)}</span>
-            </a>
-          </p>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:8px 0 0;">
+            <tr>
+              <td style="vertical-align:middle;padding:0 4px 0 0;font-size:13px;font-weight:600;line-height:1;">
+                <a href="${PORTFOLIO_LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app</a>
+              </td>
+              <td style="vertical-align:middle;line-height:0;">
+                <a href="${PORTFOLIO_LINKS.portfolio}" style="text-decoration:none;line-height:0;">${cidImg(EMAIL_ICON_CIDS.externalBlue, 12)}</a>
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
     </table>`
