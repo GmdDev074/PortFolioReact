@@ -12,8 +12,11 @@ type FormState = {
   email: string
   subject: string
   message: string
+  productUrl: string
+  linkedin: string
+  github: string
   /** Honeypot — must stay empty */
-  website: string
+  company: string
 }
 
 const initial: FormState = {
@@ -21,7 +24,10 @@ const initial: FormState = {
   email: "",
   subject: "",
   message: "",
-  website: "",
+  productUrl: "",
+  linkedin: "",
+  github: "",
+  company: "",
 }
 
 type Status = "idle" | "submitting" | "success" | "error"
@@ -47,7 +53,7 @@ export function ContactForm() {
     e.preventDefault()
     if (status === "submitting") return
 
-    if (form.website.trim()) {
+    if (form.company.trim()) {
       setStatus("success")
       setForm(initial)
       return
@@ -62,7 +68,16 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+          productUrl: form.productUrl,
+          linkedin: form.linkedin,
+          github: form.github,
+          company: form.company,
+        }),
       })
 
       const contentType = res.headers.get("content-type") || ""
@@ -163,15 +178,15 @@ export function ContactForm() {
       noValidate
     >
       <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0" aria-hidden>
-        <label htmlFor="contact-website">Website</label>
+        <label htmlFor="contact-company">Company</label>
         <input
-          id="contact-website"
-          name="website"
+          id="contact-company"
+          name="company"
           type="text"
           tabIndex={-1}
           autoComplete="off"
-          value={form.website}
-          onChange={update("website")}
+          value={form.company}
+          onChange={update("company")}
         />
       </div>
 
@@ -248,6 +263,67 @@ export function ContactForm() {
           className={cn(fieldClass, "min-h-[120px] resize-y")}
           disabled={status === "submitting"}
         />
+      </div>
+
+      <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:mt-6 sm:p-4">
+        <p className="mb-1 text-xs font-semibold tracking-wide text-foreground">
+          Your links <span className="font-normal text-muted-foreground">(optional)</span>
+        </p>
+        <p className="mb-3 text-[11px] text-muted-foreground sm:text-xs">
+          Add a product or profile URL if you want — helps me reply faster.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-1">
+          <div>
+            <label htmlFor="contact-product" className={labelClass}>
+              Product / website
+            </label>
+            <input
+              id="contact-product"
+              name="productUrl"
+              type="url"
+              maxLength={300}
+              placeholder="https://yourproduct.com"
+              value={form.productUrl}
+              onChange={update("productUrl")}
+              className={fieldClass}
+              disabled={status === "submitting"}
+            />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <label htmlFor="contact-linkedin" className={labelClass}>
+                LinkedIn
+              </label>
+              <input
+                id="contact-linkedin"
+                name="linkedin"
+                type="url"
+                maxLength={300}
+                placeholder="https://linkedin.com/in/…"
+                value={form.linkedin}
+                onChange={update("linkedin")}
+                className={fieldClass}
+                disabled={status === "submitting"}
+              />
+            </div>
+            <div>
+              <label htmlFor="contact-github" className={labelClass}>
+                GitHub
+              </label>
+              <input
+                id="contact-github"
+                name="github"
+                type="url"
+                maxLength={300}
+                placeholder="https://github.com/…"
+                value={form.github}
+                onChange={update("github")}
+                className={fieldClass}
+                disabled={status === "submitting"}
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {error && (

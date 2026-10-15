@@ -5,6 +5,9 @@ export type ContactPayload = {
   email: string
   subject: string
   message: string
+  productUrl?: string
+  linkedin?: string
+  github?: string
 }
 
 export const PORTFOLIO_LINKS = {
@@ -20,7 +23,7 @@ const brand = {
   ink: "#0f172a",
   muted: "#64748b",
   card: "#ffffff",
-  page: "#0b1220",
+  page: "#070b14",
   border: "#e2e8f0",
   softBg: "#f8fafc",
 }
@@ -36,10 +39,11 @@ function shell(opts: {
   preheader: string
   eyebrow: string
   title: string
+  subtitle?: string
   bodyHtml: string
   footerNote: string
 }): string {
-  const { preheader, eyebrow, title, bodyHtml, footerNote } = opts
+  const { preheader, eyebrow, title, subtitle, bodyHtml, footerNote } = opts
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,27 +58,35 @@ function shell(opts: {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${brand.page};padding:40px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:580px;background:${brand.card};border-radius:20px;overflow:hidden;border:1px solid ${brand.border};box-shadow:0 20px 50px rgba(0,0,0,0.35);">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:${brand.card};border-radius:22px;overflow:hidden;border:1px solid ${brand.border};box-shadow:0 24px 60px rgba(0,0,0,0.4);">
           <tr>
-            <td style="background:linear-gradient(135deg,${brand.primary} 0%,${brand.primaryDark} 55%,#1e3a8a 100%);padding:32px 32px 28px;">
-              <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.8);font-weight:700;">
-                ${escapeHtml(eyebrow)}
-              </p>
-              <h1 style="margin:0;font-size:26px;line-height:1.25;color:#ffffff;font-weight:700;">
-                ${escapeHtml(title)}
-              </h1>
-              <p style="margin:12px 0 0;font-size:14px;color:rgba(255,255,255,0.88);">
-                Android Developer · Kotlin · Jetpack Compose · React Native
-              </p>
+            <td style="background:linear-gradient(145deg,${brand.primary} 0%,${brand.primaryDark} 48%,#172554 100%);padding:34px 34px 30px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <p style="margin:0 0 10px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.78);font-weight:700;">
+                      ${escapeHtml(eyebrow)}
+                    </p>
+                    <h1 style="margin:0;font-size:28px;line-height:1.2;color:#ffffff;font-weight:700;">
+                      ${escapeHtml(title)}
+                    </h1>
+                    ${
+                      subtitle
+                        ? `<p style="margin:12px 0 0;font-size:14px;line-height:1.5;color:rgba(255,255,255,0.9);">${escapeHtml(subtitle)}</p>`
+                        : `<p style="margin:12px 0 0;font-size:14px;color:rgba(255,255,255,0.88);">Android Developer · Kotlin · Compose · React Native</p>`
+                    }
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           <tr>
-            <td style="padding:32px;color:${brand.ink};font-size:15px;line-height:1.65;">
+            <td style="padding:34px;color:${brand.ink};font-size:15px;line-height:1.65;">
               ${bodyHtml}
             </td>
           </tr>
           <tr>
-            <td style="padding:0 32px 28px;">
+            <td style="padding:0 34px 30px;">
               <div style="height:1px;background:${brand.border};margin:0 0 18px;"></div>
               <p style="margin:0;font-size:12px;line-height:1.55;color:${brand.muted};">
                 ${escapeHtml(footerNote)}
@@ -82,8 +94,8 @@ function shell(opts: {
             </td>
           </tr>
         </table>
-        <p style="margin:18px 0 0;font-size:11px;color:#94a3b8;">
-          © ${new Date().getFullYear()} Muhammad Salman
+        <p style="margin:18px 0 0;font-size:11px;color:#64748b;">
+          © ${new Date().getFullYear()} Muhammad Salman · m-salman-dev.vercel.app
         </p>
       </td>
     </tr>
@@ -95,13 +107,40 @@ function shell(opts: {
 function detailRow(label: string, valueHtml: string): string {
   return `
     <tr>
-      <td style="padding:12px 14px;border-bottom:1px solid ${brand.border};width:110px;vertical-align:top;">
-        <span style="font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:${brand.muted};">${label}</span>
+      <td style="padding:13px 16px;border-bottom:1px solid ${brand.border};width:118px;vertical-align:top;background:${brand.softBg};">
+        <span style="font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:${brand.muted};">${label}</span>
       </td>
-      <td style="padding:12px 14px;border-bottom:1px solid ${brand.border};vertical-align:top;color:${brand.ink};font-size:14px;">
+      <td style="padding:13px 16px;border-bottom:1px solid ${brand.border};vertical-align:top;color:${brand.ink};font-size:14px;">
         ${valueHtml}
       </td>
     </tr>`
+}
+
+function externalLink(url: string, label: string): string {
+  const safe = escapeHtml(url)
+  return `<a href="${safe}" style="color:${brand.primary};text-decoration:none;font-weight:600;word-break:break-all;">${escapeHtml(label)}</a>`
+}
+
+function senderLinksSection(data: ContactPayload): string {
+  const rows: string[] = []
+  if (data.productUrl) {
+    rows.push(detailRow("Product", externalLink(data.productUrl, data.productUrl)))
+  }
+  if (data.linkedin) {
+    rows.push(detailRow("LinkedIn", externalLink(data.linkedin, data.linkedin)))
+  }
+  if (data.github) {
+    rows.push(detailRow("GitHub", externalLink(data.github, data.github)))
+  }
+  if (rows.length === 0) return ""
+
+  return `
+    <p style="margin:26px 0 10px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${brand.muted};">
+      Their links
+    </p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.border};border-radius:14px;overflow:hidden;border-collapse:collapse;">
+      ${rows.join("")}
+    </table>`
 }
 
 /** Email sent to you when someone submits the contact form. */
@@ -112,24 +151,25 @@ export function inquiryEmailHtml(data: ContactPayload): string {
   const message = escapeHtml(data.message).replace(/\n/g, "<br />")
 
   const bodyHtml = `
-    <p style="margin:0 0 8px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${brand.primary};">
+    <p style="margin:0 0 6px;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:${brand.primary};">
       New lead
     </p>
-    <p style="margin:0 0 20px;font-size:16px;color:${brand.ink};">
-      Someone reached out through your portfolio. Details below.
+    <p style="margin:0 0 22px;font-size:16px;color:${brand.ink};">
+      A visitor contacted you through the portfolio. Review their details and reply when ready.
     </p>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.border};border-radius:14px;overflow:hidden;background:${brand.softBg};border-collapse:collapse;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.border};border-radius:14px;overflow:hidden;border-collapse:collapse;">
       ${detailRow("Name", `<strong>${name}</strong>`)}
       ${detailRow("Email", `<a href="mailto:${email}" style="color:${brand.primary};text-decoration:none;font-weight:600;">${email}</a>`)}
       ${detailRow("Subject", subject)}
     </table>
-    <p style="margin:22px 0 8px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${brand.muted};">
+    ${senderLinksSection(data)}
+    <p style="margin:26px 0 10px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${brand.muted};">
       Message
     </p>
-    <div style="padding:16px 18px;border-radius:14px;background:${brand.primarySoft};border:1px solid #bfdbfe;color:${brand.ink};font-size:14px;line-height:1.65;">
+    <div style="padding:18px 20px;border-radius:14px;background:${brand.primarySoft};border:1px solid #bfdbfe;color:${brand.ink};font-size:14px;line-height:1.7;">
       ${message}
     </div>
-    <p style="margin:26px 0 0;">
+    <p style="margin:28px 0 0;">
       ${linkButton(`mailto:${email}?subject=${encodeURIComponent(`Re: ${data.subject}`)}`, `Reply to ${name}`, true)}
     </p>`
 
@@ -150,14 +190,14 @@ export function thankYouEmailHtml(data: ContactPayload, ownerName: string): stri
   const subject = escapeHtml(data.subject)
 
   const bodyHtml = `
-    <p style="margin:0 0 14px;font-size:16px;">Hi ${name},</p>
+    <p style="margin:0 0 14px;font-size:17px;">Hi ${name},</p>
     <p style="margin:0 0 14px;">
       Thanks for reaching out about
       <strong style="color:${brand.ink};">${subject}</strong>.
       I’ve received your message and usually reply within a day.
     </p>
     <p style="margin:0 0 22px;color:${brand.muted};">
-      While you wait, feel free to explore my work and connect:
+      Meanwhile, explore my work or connect on these channels:
     </p>
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 8px;">
       <tr>
@@ -168,11 +208,11 @@ export function thankYouEmailHtml(data: ContactPayload, ownerName: string): stri
         </td>
       </tr>
     </table>
-    <div style="margin:24px 0 0;padding:16px 18px;border-radius:14px;background:${brand.softBg};border:1px solid ${brand.border};">
-      <p style="margin:0;color:${brand.ink};font-weight:700;">${owner}</p>
+    <div style="margin:26px 0 0;padding:18px 20px;border-radius:14px;background:${brand.softBg};border:1px solid ${brand.border};">
+      <p style="margin:0;color:${brand.ink};font-weight:700;font-size:15px;">${owner}</p>
       <p style="margin:4px 0 0;color:${brand.muted};font-size:13px;">Android Developer</p>
-      <p style="margin:10px 0 0;font-size:12px;">
-        <a href="${PORTFOLIO_LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;">${PORTFOLIO_LINKS.portfolio.replace(/^https?:\/\//, "")}</a>
+      <p style="margin:12px 0 0;font-size:12px;">
+        <a href="${PORTFOLIO_LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app</a>
       </p>
     </div>`
 
@@ -180,6 +220,7 @@ export function thankYouEmailHtml(data: ContactPayload, ownerName: string): stri
     preheader: `Thanks ${data.name} — I got your message and will reply soon.`,
     eyebrow: "Muhammad Salman",
     title: "Thanks for getting in touch",
+    subtitle: "Your message is in my inbox — I’ll get back to you soon.",
     bodyHtml,
     footerNote:
       "You received this because you submitted the contact form on Muhammad Salman’s portfolio.",
