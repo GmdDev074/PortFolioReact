@@ -66,14 +66,16 @@ function pillButton(href, cid, label, filled) {
 </tr></table></a>`
 }
 
-function iconChip(cid) {
-  return `<span style="display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:8px;background:${brand.primarySoft};vertical-align:middle;">${cidImg(cid, 14)}</span>`
-}
-
 function sectionTitle(cid, label) {
-  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px;"><tr>
-<td style="vertical-align:middle;padding:0 10px 0 0;">${iconChip(cid)}</td>
-<td style="vertical-align:middle;"><span style="font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${brand.primary};">${escapeHtml(label)}</span></td>
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 0 12px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
+<tr>
+<td width="28" valign="middle" style="width:28px;vertical-align:middle;padding:0;font-size:0;line-height:0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="28" style="border-collapse:collapse;width:28px;"><tr>
+<td bgcolor="${brand.primarySoft}" valign="middle" align="center" style="background-color:${brand.primarySoft};border-radius:8px;padding:7px;font-size:0;line-height:0;">
+<img src="cid:${cid}" width="14" height="14" alt="" style="display:block;border:0;outline:none;width:14px;height:14px;" />
+</td></tr></table>
+</td>
+<td valign="middle" height="28" style="vertical-align:middle;padding:0 0 0 10px;height:28px;font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${brand.primary};line-height:28px;mso-line-height-rule:exactly;">${escapeHtml(label)}</td>
 </tr></table>`
 }
 
@@ -88,7 +90,7 @@ function detailRow(label, valueHtml, isLast) {
 }
 
 function detailsTable(rowsHtml) {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.border};border-radius:12px;overflow:hidden;border-collapse:collapse;margin:0 0 26px;">${rowsHtml}</table>`
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${brand.border};border-radius:12px;overflow:hidden;border-collapse:collapse;margin:0 0 26px;mso-table-lspace:0pt;mso-table-rspace:0pt;">${rowsHtml}</table>`
 }
 
 function externalLink(url) {
