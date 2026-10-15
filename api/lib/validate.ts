@@ -13,7 +13,6 @@ export function validateContactBody(raw: unknown): ValidationResult {
 
   const body = raw as Record<string, unknown>
 
-  // Honeypot — bots fill hidden fields; humans leave empty
   if (typeof body.website === "string" && body.website.trim() !== "") {
     return { ok: false, error: "Unable to send message." }
   }

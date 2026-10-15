@@ -47,6 +47,12 @@ export function ContactForm() {
     e.preventDefault()
     if (status === "submitting") return
 
+    if (form.website.trim()) {
+      setStatus("success")
+      setForm(initial)
+      return
+    }
+
     setStatus("submitting")
     setError(null)
     setWarning(null)
@@ -62,10 +68,9 @@ export function ContactForm() {
       const contentType = res.headers.get("content-type") || ""
       const raw = await res.text()
 
-      // Vite without the contact middleware returns HTML instead of JSON
       if (!contentType.includes("application/json")) {
         throw new Error(
-          "Contact API is not reachable. Restart `npm run dev`, or test on your deployed Vercel URL after redeploying."
+          "Contact API is not reachable. Restart `npm run dev`, or redeploy on Vercel with GMAIL_USER and GMAIL_APP_PASSWORD set."
         )
       }
 
@@ -74,7 +79,6 @@ export function ContactForm() {
         error?: string
         warning?: string
         thanksSent?: boolean
-        inquirySent?: boolean
       }
 
       if (!res.ok || !payload.ok) {
@@ -107,7 +111,7 @@ export function ContactForm() {
         <p className="mx-auto mb-3 max-w-md text-sm text-muted-foreground">
           {thanksSent
             ? "Thanks — your message was delivered, and a confirmation email was sent to you. I usually reply within a day."
-            : "Thanks — your message was delivered to my inbox. A confirmation email to you could not be sent yet (Resend test-mode limit)."}
+            : "Thanks — your message was delivered to my inbox. A confirmation email to you could not be sent."}
         </p>
         {warning && (
           <p className="mx-auto mb-5 max-w-md rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-left text-xs text-foreground/90 sm:text-sm">
@@ -146,7 +150,6 @@ export function ContactForm() {
       className="relative glass-card rounded-2xl p-4 sm:p-6"
       noValidate
     >
-      {/* Honeypot */}
       <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden opacity-0" aria-hidden>
         <label htmlFor="contact-website">Website</label>
         <input
@@ -230,13 +233,16 @@ export function ContactForm() {
           placeholder="Tell me a bit about what you need…"
           value={form.message}
           onChange={update("message")}
-          className={cn(fieldClass, "resize-y min-h-[120px]")}
+          className={cn(fieldClass, "min-h-[120px] resize-y")}
           disabled={status === "submitting"}
         />
       </div>
 
       {error && (
-        <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive sm:text-sm" role="alert">
+        <p
+          className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive sm:text-sm"
+          role="alert"
+        >
           {error}
         </p>
       )}

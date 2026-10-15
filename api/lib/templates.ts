@@ -108,7 +108,7 @@ export function inquiryEmailHtml(data: ContactPayload): string {
     title: "New portfolio inquiry",
     bodyHtml,
     footerNote:
-      "Sent from muhammad-salman portfolio contact form. Reply directly to continue the conversation.",
+      "Sent from your portfolio contact form. Reply directly to continue the conversation.",
   })
 }
 

@@ -1,12 +1,7 @@
 import type { Plugin } from "vite"
 import type { IncomingMessage, ServerResponse } from "node:http"
-import { Resend } from "resend"
-import { inquiryEmailHtml, thankYouEmailHtml } from "../api/lib/templates"
+import { readMailEnv, sendContactMails } from "../api/lib/mailer"
 import { validateContactBody } from "../api/lib/validate"
-
-const OWNER_NAME = "Muhammad Salman"
-const DEFAULT_TO = "gmddev074@gmail.com"
-const DEFAULT_FROM = "Portfolio <onboarding@resend.dev>"
 
 function readJsonBody(req: IncomingMessage): Promise<unknown> {
   return new Promise((resolve, reject) => {
@@ -34,23 +29,7 @@ function sendJson(
   res.end(JSON.stringify(body))
 }
 
-function resendMessage(error: unknown): string {
-  if (!error || typeof error !== "object") {
-    return "Could not deliver your message. Please try again."
-  }
-  const message =
-    "message" in error ? String((error as { message?: string }).message || "") : ""
-  if (/only send testing emails/i.test(message)) {
-    return "Resend test mode can only email your Resend account address. Set CONTACT_TO_EMAIL to that email, or verify a domain and set CONTACT_FROM_EMAIL."
-  }
-  if (message) return message
-  return "Could not deliver your message. Please try again."
-}
-
-/**
- * Local Vite middleware so `npm run dev` can hit POST /api/contact
- * (same behavior as the Vercel serverless function).
- */
+/** Local Vite middleware so `npm run dev` can POST /api/contact */
 export function contactApiDevPlugin(env: Record<string, string>): Plugin {
   return {
     name: "contact-api-dev",
@@ -74,13 +53,9 @@ export function contactApiDevPlugin(env: Record<string, string>): Plugin {
         }
 
         try {
-          const apiKey = env.RESEND_API_KEY?.trim()
-          if (!apiKey || apiKey === "re_xxxxxxxx") {
-            sendJson(res, 500, {
-              ok: false,
-              error:
-                "RESEND_API_KEY is missing in .env. Add your Resend key and restart the dev server.",
-            })
+          const mailEnv = readMailEnv(env)
+          if ("error" in mailEnv) {
+            sendJson(res, 500, { ok: false, error: mailEnv.error })
             return
           }
 
@@ -95,56 +70,24 @@ export function contactApiDevPlugin(env: Record<string, string>): Plugin {
             return
           }
 
-          const { data } = validated
-          const toEmail = env.CONTACT_TO_EMAIL?.trim() || DEFAULT_TO
-          const fromEmail = env.CONTACT_FROM_EMAIL?.trim() || DEFAULT_FROM
-          const ownerName = env.CONTACT_OWNER_NAME?.trim() || OWNER_NAME
-          const resend = new Resend(apiKey)
-
-          const inquiry = await resend.emails.send({
-            from: fromEmail,
-            to: [toEmail],
-            replyTo: data.email,
-            subject: `Portfolio inquiry: ${data.subject}`,
-            html: inquiryEmailHtml(data),
-          })
-
-          if (inquiry.error) {
-            sendJson(res, 502, {
-              ok: false,
-              error: resendMessage(inquiry.error),
-            })
-            return
-          }
-
-          const thanks = await resend.emails.send({
-            from: fromEmail,
-            to: [data.email],
-            subject: `Thanks ${data.name} — I got your message`,
-            html: thankYouEmailHtml(data, ownerName),
-          })
-
-          if (thanks.error) {
-            sendJson(res, 200, {
-              ok: true,
-              inquirySent: true,
-              thanksSent: false,
-              warning:
-                "Your message reached the inbox, but the thank-you email was blocked. Resend’s free test sender can only email the Resend account address — verify a domain to send thank-you mail to visitors.",
-            })
-            return
-          }
-
+          const result = await sendContactMails(validated.data, mailEnv)
           sendJson(res, 200, {
             ok: true,
-            inquirySent: true,
-            thanksSent: true,
+            inquirySent: result.inquirySent,
+            thanksSent: result.thanksSent,
+            ...(result.warning ? { warning: result.warning } : {}),
           })
         } catch (err) {
           console.error("[contact-api-dev]", err)
-          sendJson(res, 500, {
+          const message = err instanceof Error ? err.message : ""
+          const authHint = /invalid login|username and password|badcredentials|eauth/i.test(
+            message
+          )
+          sendJson(res, 502, {
             ok: false,
-            error: "Something went wrong sending your message. Please try again.",
+            error: authHint
+              ? "Gmail login failed. Use a Google App Password (not your normal Gmail password), and enable 2-Step Verification."
+              : "Could not deliver your message. Please try again or email me directly.",
           })
         }
       })
