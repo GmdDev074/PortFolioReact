@@ -3,6 +3,7 @@ import { Constants } from "@/lib/constants"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Atmosphere } from "@/components/motion/atmosphere"
 import { SectionReveal, StaggerContainer, StaggerItem } from "@/components/motion/reveal"
+import { ContactForm } from "@/components/sections/contact-form"
 
 export function Contact() {
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
@@ -92,7 +93,22 @@ export function Contact() {
           })}
         </StaggerContainer>
 
-        <SectionReveal delay={0.06} className="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-3">
+        <SectionReveal delay={0.05} className="mx-auto mt-8 max-w-2xl sm:mt-10">
+          <div className="mb-4 text-center">
+            <h3 className="text-base font-semibold text-foreground sm:text-lg">
+              Send a message
+            </h3>
+            <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+              Fill in the form — it lands in my inbox, and you’ll get a thank-you email.
+            </p>
+          </div>
+          <ContactForm />
+        </SectionReveal>
+
+        <SectionReveal
+          delay={0.08}
+          className="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-3"
+        >
           <a
             href={Constants.PERSONAL.linkedin}
             target="_blank"
