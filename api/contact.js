@@ -1,8 +1,9 @@
 /**
- * Vercel serverless contact endpoint (CommonJS — reliable with package.json "type": "module").
+ * Vercel serverless contact endpoint (CommonJS).
  * Sends inquiry + thank-you via Gmail SMTP (App Password).
  */
 const nodemailer = require("nodemailer")
+const emailIcons = require("./lib/email-icons.js")
 
 const OWNER_NAME_DEFAULT = "Muhammad Salman"
 
@@ -12,17 +13,30 @@ const LINKS = {
   github: "https://github.com/GmdDev074",
 }
 
+const CID = {
+  mail: "icon-mail",
+  link: "icon-link",
+  message: "icon-message",
+  reply: "icon-reply",
+  external: "icon-external",
+  externalBlue: "icon-external-blue",
+  linkedin: "icon-linkedin",
+  github: "icon-github",
+}
+
 const brand = {
-  primary: "#0052FF",
-  primaryDark: "#003FCC",
-  primarySoft: "#EEF3FF",
+  primary: "#0066FF",
+  primaryDeep: "#002BB8",
+  primaryMid: "#0052FF",
+  primarySoft: "#EAF1FF",
+  primarySoftBorder: "#C9DAFF",
   ink: "#0F172A",
   muted: "#64748B",
   card: "#FFFFFF",
-  page: "#0B1220",
+  page: "#07111F",
   border: "#E2E8F0",
-  softBg: "#F8FAFC",
   labelBg: "#F1F5F9",
+  softBg: "#F7F9FC",
 }
 
 function escapeHtml(value) {
@@ -34,78 +48,39 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;")
 }
 
-function iconBadge(symbol) {
-  return `<span style="display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:7px;background:${brand.primarySoft};color:${brand.primary};font-size:12px;font-weight:700;vertical-align:middle;margin-right:8px;">${symbol}</span>`
+function cidImg(cid, size) {
+  const s = size || 14
+  return `<img src="cid:${cid}" width="${s}" height="${s}" alt="" style="display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;" />`
 }
 
-function sectionTitle(symbol, label) {
-  return `<p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:${brand.primary};">${iconBadge(symbol)}${escapeHtml(label)}</p>`
+function iconChip(cid) {
+  return `<span style="display:inline-block;width:28px;height:28px;line-height:28px;text-align:center;border-radius:8px;background:${brand.primarySoft};vertical-align:middle;">${cidImg(cid, 14)}</span>`
 }
 
-function linkButton(href, label, opts = {}) {
-  const { filled = false, fullWidth = false, icon } = opts
-  const iconHtml = icon
-    ? `<span style="margin-right:8px;font-size:14px;line-height:1;">${icon}</span>`
-    : ""
-  const display = fullWidth ? "block" : "inline-block"
-  const width = fullWidth
-    ? "width:100%;box-sizing:border-box;text-align:center;"
-    : ""
-  const margin = fullWidth ? "margin:0;" : "margin:0 8px 10px 0;"
-  if (filled) {
-    return `<a href="${href}" style="display:${display};${width}${margin}background:${brand.primary};color:#ffffff;text-decoration:none;font-weight:700;font-size:14px;padding:14px 20px;border-radius:12px;">${iconHtml}${escapeHtml(label)}</a>`
-  }
-  return `<a href="${href}" style="display:${display};${width}${margin}background:${brand.primarySoft};color:${brand.primary};text-decoration:none;font-weight:600;font-size:13px;padding:12px 16px;border-radius:999px;border:1px solid #C7D7FF;">${iconHtml}${escapeHtml(label)}</a>`
-}
-
-function shell({
-  preheader,
-  eyebrow,
-  title,
-  subtitle,
-  bodyHtml,
-  footerNote,
-  footerHtml,
-}) {
-  return `<!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/></head>
-<body style="margin:0;padding:0;background:${brand.page};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(preheader)}</div>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${brand.page};padding:36px 14px;"><tr><td align="center">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:${brand.card};border-radius:18px;overflow:hidden;border:1px solid ${brand.border};box-shadow:0 20px 50px rgba(0,0,0,0.35);">
-<tr><td style="background:${brand.primary};padding:32px 32px 28px;">
-<p style="margin:0 0 10px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.8);font-weight:700;">${escapeHtml(eyebrow)}</p>
-<h1 style="margin:0;font-size:26px;line-height:1.25;color:#ffffff;font-weight:700;">${escapeHtml(title)}</h1>
-<p style="margin:12px 0 0;font-size:14px;line-height:1.5;color:rgba(255,255,255,0.92);">${escapeHtml(subtitle || "Android Developer · Kotlin · Compose · React Native")}</p>
-</td></tr>
-<tr><td style="padding:30px 32px 8px;color:${brand.ink};font-size:15px;line-height:1.65;">${bodyHtml}</td></tr>
-<tr><td style="padding:18px 32px 28px;">
-${footerHtml || ""}
-<div style="height:1px;background:${brand.border};margin:0 0 16px;"></div>
-<p style="margin:0;font-size:12px;line-height:1.55;color:${brand.muted};">${footerNote}</p>
-</td></tr>
-</table>
-<p style="margin:16px 0 0;font-size:11px;color:#64748b;">© ${new Date().getFullYear()} Muhammad Salman · m-salman-dev.vercel.app</p>
-</td></tr></table></body></html>`
+function sectionTitle(cid, label) {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px;"><tr>
+<td style="vertical-align:middle;padding:0 10px 0 0;">${iconChip(cid)}</td>
+<td style="vertical-align:middle;"><span style="font-size:12px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:${brand.primary};">${escapeHtml(label)}</span></td>
+</tr></table>`
 }
 
 function detailRow(label, valueHtml, isLast) {
   const border = isLast ? "none" : `1px solid ${brand.border}`
   return `<tr>
-<td style="padding:12px 14px;border-bottom:${border};width:110px;vertical-align:top;background:${brand.labelBg};">
+<td style="padding:13px 16px;border-bottom:${border};width:108px;vertical-align:middle;background:${brand.labelBg};">
 <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:${brand.muted};">${escapeHtml(label)}</span>
 </td>
-<td style="padding:12px 14px;border-bottom:${border};vertical-align:top;color:${brand.ink};font-size:14px;background:${brand.card};">${valueHtml}</td>
+<td style="padding:13px 16px;border-bottom:${border};vertical-align:middle;color:${brand.ink};font-size:14px;line-height:1.45;background:${brand.card};">${valueHtml}</td>
 </tr>`
 }
 
-function detailsTable(rows) {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.border};border-radius:12px;overflow:hidden;border-collapse:collapse;margin:0 0 22px;">${rows}</table>`
+function detailsTable(rowsHtml) {
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.border};border-radius:12px;overflow:hidden;border-collapse:collapse;margin:0 0 26px;">${rowsHtml}</table>`
 }
 
-function externalLink(url, label) {
+function externalLink(url) {
   const safe = escapeHtml(url)
-  return `<a href="${safe}" style="color:${brand.primary};text-decoration:none;font-weight:600;word-break:break-all;">${escapeHtml(label || url)}</a>`
+  return `<a href="${safe}" style="color:${brand.primary};text-decoration:none;font-weight:600;word-break:break-all;">${safe}</a>`
 }
 
 function senderLinksSection(data) {
@@ -119,7 +94,25 @@ function senderLinksSection(data) {
       detailRow(label, externalLink(url), i === items.length - 1)
     )
     .join("")
-  return `${sectionTitle("↗", "Their links")}${detailsTable(rows)}`
+  return `${sectionTitle(CID.link, "Their links")}${detailsTable(rows)}`
+}
+
+function shell({ preheader, eyebrow, title, subtitle, bodyHtml, footerInnerHtml }) {
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="color-scheme" content="light"/></head>
+<body style="margin:0;padding:0;background:${brand.page};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(preheader)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${brand.page};padding:40px 12px;"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:${brand.card};border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.45);">
+<tr><td style="background-color:${brand.primaryMid};background-image:linear-gradient(165deg,${brand.primaryDeep} 0%,${brand.primaryMid} 45%,${brand.primary} 100%);padding:34px 32px 30px;">
+<p style="margin:0 0 10px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.82);font-weight:700;">${escapeHtml(eyebrow)}</p>
+<h1 style="margin:0;font-size:28px;line-height:1.2;color:#ffffff;font-weight:700;letter-spacing:-0.02em;">${escapeHtml(title)}</h1>
+<p style="margin:12px 0 0;font-size:14px;line-height:1.5;color:rgba(255,255,255,0.92);">${escapeHtml(subtitle)}</p>
+</td></tr>
+<tr><td style="padding:30px 32px 10px;color:${brand.ink};font-size:15px;line-height:1.65;background:${brand.card};">${bodyHtml}</td></tr>
+<tr><td style="padding:12px 32px 28px;background:${brand.card};">${footerInnerHtml}</td></tr>
+</table>
+</td></tr></table></body></html>`
 }
 
 function inquiryHtml(data) {
@@ -127,27 +120,31 @@ function inquiryHtml(data) {
   const email = escapeHtml(data.email)
   const subject = escapeHtml(data.subject)
   const message = escapeHtml(data.message).replace(/\n/g, "<br/>")
-  const replyHref = `mailto:${encodeURIComponent(data.email)}?subject=${encodeURIComponent(`Re: ${data.subject}`)}`
+  const replyHref = `mailto:${data.email}?subject=${encodeURIComponent(`Re: ${data.subject}`)}`
 
   return shell({
     preheader: `New inquiry from ${data.name}: ${data.subject}`,
     eyebrow: "— Portfolio contact",
     title: "New portfolio inquiry",
-    bodyHtml: `${sectionTitle("✉", "New lead")}
-<p style="margin:0 0 16px;font-size:15px;color:${brand.ink};">A visitor contacted you through the portfolio. Review their details and reply when ready.</p>
+    subtitle: "Android Developer • Kotlin • Compose • React Native",
+    bodyHtml: `${sectionTitle(CID.mail, "New lead")}
+<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${brand.ink};">A visitor contacted you through the portfolio. Review their details and reply when ready.</p>
 ${detailsTable(
-  detailRow("Name", `<strong style="color:${brand.ink};">${name}</strong>`) +
+  detailRow("Name", `<strong style="color:${brand.ink};font-weight:700;">${name}</strong>`) +
     detailRow(
       "Email",
       `<a href="mailto:${email}" style="color:${brand.primary};text-decoration:none;font-weight:600;">${email}</a>`
     ) +
-    detailRow("Subject", subject, true)
+    detailRow("Subject", `<span style="color:${brand.ink};">${subject}</span>`, true)
 )}
 ${senderLinksSection(data)}
-${sectionTitle("💬", "The message")}
-<div style="padding:16px 18px;border-radius:12px;background:${brand.primarySoft};border:1px solid #C7D7FF;color:${brand.ink};font-size:14px;line-height:1.7;margin:0 0 8px;">${message}</div>`,
-    footerHtml: `<div style="margin:0 0 22px;">${linkButton(replyHref, `Reply to ${data.name}`, { filled: true, fullWidth: true, icon: "↩" })}</div>`,
-    footerNote: `Sent from <a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app</a>. Reply directly to continue the conversation.`,
+${sectionTitle(CID.message, "The message")}
+<div style="padding:18px;border-radius:12px;background:${brand.primarySoft};border:1px solid ${brand.primarySoftBorder};color:${brand.ink};font-size:14px;line-height:1.7;">${message}</div>`,
+    footerInnerHtml: `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0 0;"><tr>
+<td align="center" bgcolor="${brand.primary}" style="border-radius:12px;background-color:${brand.primary};">
+<a href="${replyHref}" style="display:block;padding:15px 20px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;"><span style="margin-right:8px;vertical-align:middle;">${cidImg(CID.reply, 16)}</span>Reply to ${name}</a>
+</td></tr></table>
+<p style="margin:18px 0 0;font-size:12px;line-height:1.55;color:${brand.muted};">Sent from <a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app</a>. Reply directly to continue the conversation.</p>`,
   })
 }
 
@@ -155,36 +152,56 @@ function thanksHtml(data, ownerName) {
   const name = escapeHtml(data.name)
   const owner = escapeHtml(ownerName)
   const subject = escapeHtml(data.subject)
-  const initials = String(ownerName)
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => (p[0] ? p[0].toUpperCase() : ""))
-    .join("")
+  const initials =
+    String(ownerName)
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => (p[0] ? p[0].toUpperCase() : ""))
+      .join("") || "MS"
 
   return shell({
     preheader: `Thanks ${data.name} — I got your message and will reply soon.`,
     eyebrow: "↺ Auto-reply",
     title: "Thanks for getting in touch",
     subtitle: "Your message is in my inbox — I’ll get back to you soon",
-    bodyHtml: `<p style="margin:0 0 12px;font-size:17px;color:${brand.ink};">Hi ${name},</p>
-<p style="margin:0 0 14px;color:${brand.ink};">Thanks for reaching out about <strong>${subject}</strong>. I’ve received your message and usually reply within a day.</p>
-<p style="margin:0 0 18px;color:${brand.muted};">Meanwhile, explore my work or connect on these channels:</p>
-<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 22px;"><tr>
-<td style="padding:0 8px 8px 0;">${linkButton(LINKS.portfolio, "View Portfolio", { filled: true, icon: "↗" })}</td>
-<td style="padding:0 8px 8px 0;">${linkButton(LINKS.linkedin, "LinkedIn")}</td>
-<td style="padding:0 0 8px 0;">${linkButton(LINKS.github, "GitHub")}</td>
+    bodyHtml: `<p style="margin:0 0 12px;font-size:17px;font-weight:700;color:${brand.ink};">Hi ${name},</p>
+<p style="margin:0 0 14px;font-size:15px;line-height:1.65;color:${brand.ink};">Thanks for reaching out about <strong style="font-weight:700;">${subject}</strong>. I’ve received your message and usually reply within a day.</p>
+<p style="margin:0 0 18px;font-size:14px;color:${brand.muted};">Meanwhile, explore my work or connect on these channels:</p>
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 24px;"><tr>
+<td style="padding:0 8px 8px 0;"><a href="${LINKS.portfolio}" style="display:inline-block;background:${brand.primary};color:#ffffff;text-decoration:none;font-weight:700;font-size:13px;padding:12px 16px;border-radius:999px;"><span style="margin-right:6px;vertical-align:middle;">${cidImg(CID.external, 14)}</span>View Portfolio</a></td>
+<td style="padding:0 8px 8px 0;"><a href="${LINKS.linkedin}" style="display:inline-block;background:${brand.primarySoft};color:${brand.primary};text-decoration:none;font-weight:600;font-size:13px;padding:11px 15px;border-radius:999px;border:1px solid ${brand.primarySoftBorder};"><span style="margin-right:6px;vertical-align:middle;">${cidImg(CID.linkedin, 14)}</span>LinkedIn</a></td>
+<td style="padding:0 0 8px 0;"><a href="${LINKS.github}" style="display:inline-block;background:${brand.primarySoft};color:${brand.ink};text-decoration:none;font-weight:600;font-size:13px;padding:11px 15px;border-radius:999px;border:1px solid ${brand.primarySoftBorder};"><span style="margin-right:6px;vertical-align:middle;">${cidImg(CID.github, 14)}</span>GitHub</a></td>
 </tr></table>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #C7D7FF;border-radius:14px;background:${brand.softBg};overflow:hidden;">
-<tr><td style="padding:18px 20px;" align="center">
-<div style="width:52px;height:52px;line-height:52px;border-radius:999px;background:${brand.primary};color:#ffffff;font-size:16px;font-weight:700;margin:0 auto 12px;text-align:center;">${escapeHtml(initials || "MS")}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid ${brand.primarySoftBorder};border-radius:14px;background:${brand.softBg};"><tr>
+<td style="padding:18px 12px 18px 18px;width:56px;vertical-align:middle;"><div style="width:48px;height:48px;line-height:48px;border-radius:999px;background:${brand.primary};color:#ffffff;font-size:15px;font-weight:700;text-align:center;">${escapeHtml(initials)}</div></td>
+<td style="padding:18px 18px 18px 4px;vertical-align:middle;">
 <p style="margin:0;color:${brand.ink};font-weight:700;font-size:15px;">${owner}</p>
-<p style="margin:4px 0 0;color:${brand.muted};font-size:13px;">Android Developer</p>
-<p style="margin:10px 0 0;font-size:13px;"><a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app ↗</a></p>
+<p style="margin:3px 0 0;color:${brand.muted};font-size:13px;">Android Developer</p>
+<p style="margin:8px 0 0;font-size:13px;"><a href="${LINKS.portfolio}" style="color:${brand.primary};text-decoration:none;font-weight:600;">m-salman-dev.vercel.app&nbsp;<span style="vertical-align:middle;">${cidImg(CID.externalBlue, 12)}</span></a></p>
 </td></tr></table>`,
-    footerNote:
-      "You received this because you submitted the contact form on Muhammad Salman’s portfolio.",
+    footerInnerHtml: `<div style="height:1px;background:${brand.border};margin:22px 0 16px;"></div>
+<p style="margin:0;font-size:12px;line-height:1.55;color:${brand.muted};">You received this because you submitted the contact form on Muhammad Salman’s portfolio.</p>`,
   })
+}
+
+function attachIcons(keys) {
+  const map = {
+    mail: emailIcons.mail,
+    link: emailIcons.link,
+    message: emailIcons.message,
+    reply: emailIcons.reply,
+    external: emailIcons.external,
+    externalBlue: emailIcons["external-blue"],
+    linkedin: emailIcons.linkedin,
+    github: emailIcons.github,
+  }
+  return keys.map((key) => ({
+    filename: `${key}.png`,
+    content: map[key],
+    cid: CID[key],
+    contentDisposition: "inline",
+  }))
 }
 
 function json(res, status, body) {
@@ -224,7 +241,6 @@ function normalizeOptionalUrl(raw, label) {
 }
 
 function validate(body) {
-  // Honeypot — must stay empty (not a real product/website field)
   if (typeof body.company === "string" && body.company.trim() !== "") {
     return { honeypot: true }
   }
@@ -279,9 +295,7 @@ module.exports = async function handler(req, res) {
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS")
     res.setHeader("Access-Control-Allow-Headers", "Content-Type")
 
-    if (req.method === "OPTIONS") {
-      return res.status(204).end()
-    }
+    if (req.method === "OPTIONS") return res.status(204).end()
     if (req.method !== "POST") {
       return json(res, 405, { ok: false, error: "Method not allowed." })
     }
@@ -305,9 +319,7 @@ module.exports = async function handler(req, res) {
     }
 
     const validated = validate(body)
-    if (validated.honeypot) {
-      return json(res, 200, { ok: true })
-    }
+    if (validated.honeypot) return json(res, 200, { ok: true })
     if (validated.error) {
       return json(res, 400, { ok: false, error: validated.error })
     }
@@ -317,10 +329,7 @@ module.exports = async function handler(req, res) {
       host: "smtp.gmail.com",
       port: 465,
       secure: true,
-      auth: {
-        user: gmailUser,
-        pass: gmailPass,
-      },
+      auth: { user: gmailUser, pass: gmailPass },
     })
 
     const from = `"${ownerName}" <${gmailUser}>`
@@ -331,6 +340,7 @@ module.exports = async function handler(req, res) {
       replyTo: data.email,
       subject: `Portfolio inquiry: ${data.subject}`,
       html: inquiryHtml(data),
+      attachments: attachIcons(["mail", "link", "message", "reply"]),
     })
 
     let thanksSent = true
@@ -341,6 +351,12 @@ module.exports = async function handler(req, res) {
         to: data.email,
         subject: `Thanks ${data.name} — I got your message`,
         html: thanksHtml(data, ownerName),
+        attachments: attachIcons([
+          "external",
+          "externalBlue",
+          "linkedin",
+          "github",
+        ]),
       })
     } catch (thanksErr) {
       console.error("[contact] thank-you failed", thanksErr)
@@ -371,6 +387,4 @@ module.exports = async function handler(req, res) {
   }
 }
 
-module.exports.config = {
-  maxDuration: 30,
-}
+module.exports.config = { maxDuration: 30 }

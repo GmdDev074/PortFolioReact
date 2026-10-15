@@ -1,5 +1,14 @@
+import { createRequire } from "node:module"
 import nodemailer from "nodemailer"
-import { inquiryEmailHtml, thankYouEmailHtml, type ContactPayload } from "./templates"
+import {
+  inquiryEmailHtml,
+  thankYouEmailHtml,
+  EMAIL_ICON_CIDS,
+  type ContactPayload,
+} from "./templates"
+
+const require = createRequire(import.meta.url)
+const emailIcons = require("./email-icons.js") as Record<string, Buffer>
 
 export type MailEnv = {
   gmailUser: string
@@ -41,6 +50,28 @@ function createTransport(mailEnv: MailEnv) {
   })
 }
 
+function iconAttachments(
+  keys: Array<keyof typeof EMAIL_ICON_CIDS>
+): Array<{ filename: string; content: Buffer; cid: string; contentDisposition: "inline" }> {
+  const map: Record<string, Buffer> = {
+    mail: emailIcons.mail,
+    link: emailIcons.link,
+    message: emailIcons.message,
+    reply: emailIcons.reply,
+    external: emailIcons.external,
+    externalBlue: emailIcons["external-blue"],
+    linkedin: emailIcons.linkedin,
+    github: emailIcons.github,
+  }
+
+  return keys.map((key) => ({
+    filename: `${key}.png`,
+    content: map[key],
+    cid: EMAIL_ICON_CIDS[key],
+    contentDisposition: "inline" as const,
+  }))
+}
+
 export async function sendContactMails(
   data: ContactPayload,
   mailEnv: MailEnv
@@ -54,6 +85,7 @@ export async function sendContactMails(
     replyTo: data.email,
     subject: `Portfolio inquiry: ${data.subject}`,
     html: inquiryEmailHtml(data),
+    attachments: iconAttachments(["mail", "link", "message", "reply"]),
   })
 
   try {
@@ -62,6 +94,12 @@ export async function sendContactMails(
       to: data.email,
       subject: `Thanks ${data.name} — I got your message`,
       html: thankYouEmailHtml(data, mailEnv.ownerName),
+      attachments: iconAttachments([
+        "external",
+        "externalBlue",
+        "linkedin",
+        "github",
+      ]),
     })
     return { inquirySent: true, thanksSent: true }
   } catch (err) {
