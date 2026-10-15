@@ -55,9 +55,20 @@ export function ContactForm() {
         body: JSON.stringify(form),
       })
 
-      const payload = (await res.json().catch(() => ({}))) as {
+      const contentType = res.headers.get("content-type") || ""
+      const raw = await res.text()
+
+      // Vite `npm run dev` has no /api — it returns the HTML app instead of JSON
+      if (!contentType.includes("application/json")) {
+        throw new Error(
+          "Contact API is not reachable. Use `npm run dev:full` (vercel dev), or test on your deployed Vercel URL after redeploying."
+        )
+      }
+
+      const payload = JSON.parse(raw || "{}") as {
         ok?: boolean
         error?: string
+        warning?: string
       }
 
       if (!res.ok || !payload.ok) {
@@ -68,6 +79,9 @@ export function ContactForm() {
 
       setStatus("success")
       setForm(initial)
+      if (payload.warning) {
+        console.warn("[contact]", payload.warning)
+      }
     } catch (err) {
       setStatus("error")
       setError(
