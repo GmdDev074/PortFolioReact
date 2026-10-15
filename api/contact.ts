@@ -95,12 +95,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       // Inquiry already sent — still success for the form
       return res.status(200).json({
         ok: true,
+        inquirySent: true,
+        thanksSent: false,
         warning:
-          "Message received, but thank-you email could not be sent (Resend test domain limit). Verify a domain to enable visitor thank-you emails.",
+          "Your message reached the inbox, but the thank-you email was blocked. Resend’s free test sender can only email the Resend account address — verify a domain to send thank-you mail to visitors.",
       })
     }
 
-    return res.status(200).json({ ok: true })
+    return res.status(200).json({
+      ok: true,
+      inquirySent: true,
+      thanksSent: true,
+    })
   } catch (err) {
     console.error("[contact] unexpected error", err)
     return res.status(500).json({

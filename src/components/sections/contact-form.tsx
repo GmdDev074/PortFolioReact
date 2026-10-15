@@ -30,6 +30,8 @@ export function ContactForm() {
   const [form, setForm] = useState<FormState>(initial)
   const [status, setStatus] = useState<Status>("idle")
   const [error, setError] = useState<string | null>(null)
+  const [warning, setWarning] = useState<string | null>(null)
+  const [thanksSent, setThanksSent] = useState(true)
 
   const update =
     (key: keyof FormState) =>
@@ -47,6 +49,8 @@ export function ContactForm() {
 
     setStatus("submitting")
     setError(null)
+    setWarning(null)
+    setThanksSent(true)
 
     try {
       const res = await fetch("/api/contact", {
@@ -58,10 +62,10 @@ export function ContactForm() {
       const contentType = res.headers.get("content-type") || ""
       const raw = await res.text()
 
-      // Vite `npm run dev` has no /api — it returns the HTML app instead of JSON
+      // Vite without the contact middleware returns HTML instead of JSON
       if (!contentType.includes("application/json")) {
         throw new Error(
-          "Contact API is not reachable. Use `npm run dev:full` (vercel dev), or test on your deployed Vercel URL after redeploying."
+          "Contact API is not reachable. Restart `npm run dev`, or test on your deployed Vercel URL after redeploying."
         )
       }
 
@@ -69,6 +73,8 @@ export function ContactForm() {
         ok?: boolean
         error?: string
         warning?: string
+        thanksSent?: boolean
+        inquirySent?: boolean
       }
 
       if (!res.ok || !payload.ok) {
@@ -77,11 +83,10 @@ export function ContactForm() {
         )
       }
 
+      setThanksSent(payload.thanksSent !== false)
+      setWarning(payload.warning ?? null)
       setStatus("success")
       setForm(initial)
-      if (payload.warning) {
-        console.warn("[contact]", payload.warning)
-      }
     } catch (err) {
       setStatus("error")
       setError(
@@ -99,16 +104,25 @@ export function ContactForm() {
           <CheckCircle2 className="h-6 w-6" />
         </div>
         <h3 className="mb-1.5 text-lg font-semibold text-foreground">Message sent</h3>
-        <p className="mx-auto mb-5 max-w-md text-sm text-muted-foreground">
-          Thanks — I received your note and you should get a confirmation email shortly.
-          I usually reply within a day.
+        <p className="mx-auto mb-3 max-w-md text-sm text-muted-foreground">
+          {thanksSent
+            ? "Thanks — your message was delivered, and a confirmation email was sent to you. I usually reply within a day."
+            : "Thanks — your message was delivered to my inbox. A confirmation email to you could not be sent yet (Resend test-mode limit)."}
         </p>
+        {warning && (
+          <p className="mx-auto mb-5 max-w-md rounded-lg border border-primary/25 bg-primary/10 px-3 py-2 text-left text-xs text-foreground/90 sm:text-sm">
+            {warning}
+          </p>
+        )}
+        {!warning && <div className="mb-5" />}
         <Button
           type="button"
           variant="outline"
           onClick={() => {
             setStatus("idle")
             setError(null)
+            setWarning(null)
+            setThanksSent(true)
           }}
         >
           Send another message
