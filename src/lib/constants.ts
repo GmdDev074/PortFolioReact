@@ -47,6 +47,50 @@ export const Constants = {
     subtitle: "A structured approach to delivering high-quality Android applications",
   },
 
+  // Services section
+  SERVICES_SECTION: {
+    subtitle: "What I Offer",
+    title: "Services",
+    description:
+      "Focused Android engagements — from first MVP to Play Store launch and ongoing care.",
+    cta: "Discuss your project",
+  },
+
+  SERVICES: [
+    {
+      id: "mvp",
+      title: "MVP Build",
+      description:
+        "Turn a clear idea into a shippable Android MVP — Kotlin, Compose, and a clean architecture you can grow.",
+      icon: "Rocket",
+      highlights: ["Scope & architecture", "Core features", "Store-ready build"],
+    },
+    {
+      id: "compose-migration",
+      title: "Compose Migration",
+      description:
+        "Modernize XML / View-based apps to Jetpack Compose without freezing product work.",
+      icon: "RefreshCw",
+      highlights: ["Screen-by-screen plan", "Shared UI system", "Safer refactors"],
+    },
+    {
+      id: "play-store",
+      title: "Play Store Ship",
+      description:
+        "Get the release over the line — signing, tracks, listing polish, and a calm launch.",
+      icon: "Store",
+      highlights: ["Release tracks", "Listing & assets", "Launch checklist"],
+    },
+    {
+      id: "maintenance",
+      title: "Maintenance",
+      description:
+        "Keep a live app healthy — crash fixes, Play policy updates, and steady feature work.",
+      icon: "Wrench",
+      highlights: ["Crash & ANR triage", "Feature iterations", "Ongoing support"],
+    },
+  ],
+
   // Skills/Technologies
   SKILLS: [
     {
@@ -165,12 +209,12 @@ export const Constants = {
     }
   ],
 
-  // Navigation Links — order matches Home sections
+  // Navigation Links — order matches Home sections (logo covers #home)
   NAV_LINKS: [
-    { name: 'Hero', href: '#home' },
     { name: 'Projects', href: '#projects' },
     { name: 'Skills', href: '#skills' },
     { name: 'Process', href: '#process' },
+    { name: 'Services', href: '#services' },
     { name: 'Why Me', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ],
@@ -203,10 +247,10 @@ export const Constants = {
     connect: 'Connect',
     allRightsReserved: 'All rights reserved.',
     links: [
-      { name: 'Hero', href: '#home' },
       { name: 'Projects', href: '#projects' },
       { name: 'Skills', href: '#skills' },
       { name: 'Process', href: '#process' },
+      { name: 'Services', href: '#services' },
       { name: 'Why Me', href: '#about' },
       { name: 'Contact', href: '#contact' },
     ],

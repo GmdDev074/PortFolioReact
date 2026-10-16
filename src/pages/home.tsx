@@ -3,6 +3,7 @@ import { Hero } from "@/components/sections/hero"
 import { Skills } from "@/components/sections/skills"
 import { Projects } from "@/components/sections/projects"
 import { Process } from "@/components/sections/process"
+import { Services } from "@/components/sections/services"
 import { About } from "@/components/sections/about"
 import { Contact } from "@/components/sections/contact"
 import { Constants } from "@/lib/constants"
@@ -37,6 +38,7 @@ export function Home() {
       <Projects />
       <Skills />
       <Process />
+      <Services />
       <About />
       <Contact />
     </>
